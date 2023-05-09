@@ -16,3 +16,5 @@ This token is not likely to make anyone any money. This is not an investment. Th
 
 HERD Contract 
 
+https://arbiscan.io/address/0xcef7d1a0b5b42c9b058fcde9c5bfe814a3baa4f2
+
