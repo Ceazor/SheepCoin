@@ -2,12 +2,13 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "../src/Sheep.sol";
+import "../src/SheepV2.sol";
 
 contract SheepTest is Test {
     SHEEP public sheep;
     address constant ceazor = 0x3c5Aac016EF2F178e8699D6208796A2D67557fe2;
     address constant dan = 0x57163Ac75E95f3690be63CA43F6f27bb38B48453;
+    address constant dumper = 0x699675204aFD7Ac2BB146d60e4E3Ddc243843519;
 
     function setUp() public {
         sheep = new SHEEP();
@@ -59,6 +60,23 @@ contract SheepTest is Test {
         testBalanceThis();
         assertEq(sheep.balanceOf(ceazor), 1 * 1e18);
         assertEq(sheep.balanceOf(dan), 2 * 1e18);
+    }
+
+    function testSellingToZero() public {
+        sheep.takeToPasture();
+        uint sendSheep = 1 * 1e18;
+        uint send2Sheep = 2 * 1e18;
+        uint send3Sheep = 3 * 1e18;
+        sheep.transfer(ceazor, sendSheep);
+        sheep.transfer(dan, send2Sheep);
+        sheep.transfer(dumper, send3Sheep);
+        assertEq(sheep.herdSize(), 4);
+        vm.prank(dumper);
+        sheep.transfer(dan, send2Sheep);
+        assertEq(sheep.herdSize(), 4);
+        vm.prank(dumper);
+        sheep.transfer(dan, sendSheep);
+        assertEq(sheep.herdSize(), 3);
     }
 
     function testFailReturnSheep() public {
