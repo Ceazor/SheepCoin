@@ -17,9 +17,20 @@ This token is not likely to make anyone any money. This is not an investment. Th
 SHEEP Contract
 V2
 https://arbiscan.io/address/0x35F66E6d3A3B432d575D55783344aDB925Ae4Dd3
+Cabin Contract
+https://arbiscan.io/address/0x43f46607d4136f1b134f28a23ca8ce795b29e3f3
 
 V1Contract
 https://arbiscan.io/address/0xcef7d1a0b5b42c9b058fcde9c5bfe814a3baa4f2
+
+
+V3 Ideas
+
+limit balances of to 1%, 2%.. etc
+blacklist contracts
+
+wolf/sheepdog
+
 
 V2 GOAT ideas
 
