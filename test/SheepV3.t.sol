@@ -24,7 +24,7 @@ contract SheepTest is Test {
         sheep = new SHEEP();
         wolf = new WOLF(sheepAddy, ceazor);
         sheepDog = new SHEEPDOG(sheep);
-        sheep.buildTheFarm(wolfAddy, dumper, dumper); //TO:DO.. change these when ready
+        sheep.buildTheFarm(wolfAddy, sheepDogAddy, dumper); //TO:DO.. change these when ready
     }
 
     function balanceThis() public view returns (uint256){
@@ -86,7 +86,7 @@ contract SheepTest is Test {
         assertEq(sheep.herdSize(), 3);
     }
 
-    function testFailReturnSheep() public {
+    function testFailReturnSheepToContract() public {
         sheep.takeToPasture();
         uint sendSheep = ONE;
         uint send2Sheep = 2  * 1e18;
@@ -169,18 +169,34 @@ contract SheepTest is Test {
             vm.warp(block.timestamp + 604801);
             wolf.eatSheep(dan, 0);
     }
+    function testFailEatWithElsesWolf() public {
+        uint sendSheep = TEN + TEN + TEN;
+        sheep.transfer(ceazor, sendSheep);
+        uint sendSheepDan = TEN;
+        sheep.transfer(dan, sendSheepDan);        
+        vm.startPrank(ceazor);
+            sheep.approve(wolfAddy, 10000000 * 1e18);
+            wolf.getWolf();
+            vm.warp(block.timestamp + 604801);
+        vm.stopPrank();
+        vm.startPrank(dan);
+            wolf.eatSheep(ceazor, 0);
+    }
     function testFailSheepDog() public {
         sheep.transfer(ceazor, TEN);
         sheep.transfer(dan, TEN);
         vm.startPrank(dan);
             sheep.approve(sheepDogAddy, TEN);
             sheepDog.protect(TEN);
+            assert(sheep.balanceOf(dan)== 0);
+            assert(sheep.balanceOf(sheepDogAddy) == TEN);
+            assert(sheepDog.balanceOf(dan) == TEN);
         vm.stopPrank();
         vm.startPrank(ceazor);
             sheep.approve(wolfAddy, 10000000 * 1e18);
             wolf.getWolf();
-            vm.warp(block.timestamp + 604801);
-            wolf.eatSheep(dan, 0);
+            vm.warp(block.timestamp + 86401);
+            wolf.eatSheep(sheepDogAddy, 0);
     }
     function testLeaveSheepDog() public {
         sheep.transfer(ceazor, TEN);
@@ -198,5 +214,17 @@ contract SheepTest is Test {
             sheepDog.getSheep();
             assert(sheep.balanceOf(dan) == ONE + ONE);
     }
+    function testFailLeaveSheepDogEarly() public {
+        sheep.transfer(ceazor, TEN);
+        sheep.transfer(dan, TEN);
+        vm.startPrank(dan);
+            sheep.approve(sheepDogAddy, TEN);
+            sheepDog.protect(TEN);
+            assert(sheep.balanceOf(dan) == 0);
+            sheepDog.dogSleep(ONE);
+            vm.warp(block.timestamp + 172600);
+            sheepDog.getSheep();
+    }
+
 
 }

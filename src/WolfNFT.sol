@@ -45,6 +45,7 @@ function getWolf() public {
     wolfID = wolfID + 1;
 }
 function eatSheep(address _victim, uint _wolfID) public {
+    require(_isApprovedOrOwner(msg.sender, _wolfID), "you dont own this wolf");
     require(block.timestamp < starved[_wolfID], 'your wolf starved');
     require(block.timestamp > hungry[_wolfID], "your wolf is not hungry yet");
     uint256 sheepToEat = hunger[_wolfID];
