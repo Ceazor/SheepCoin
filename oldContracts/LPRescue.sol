@@ -4,6 +4,9 @@ import "openzeppelin-contracts/contracts/access/Ownable.sol";
 import "src/interfaces/ISheep.sol";
 import "src/interfaces/ILP.sol";
 import "src/interfaces/IRouter.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+
 
 pragma solidity ^0.8.13;
 
@@ -12,6 +15,8 @@ contract LPRescue is Ownable {
     address public lp = 0xe24960a5B396a6E1eDA5C6EA0D1eb29480404B1d;
     address public sheepV1 = 0xcEF7d1A0b5b42c9B058FcDE9C5BFe814a3bAa4f2;
     address public wallet = 0x275946F183925c316feEB920F53562BBfC127134;
+    address constant WETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
+
 
     function save() public onlyOwner {
         penTheSheep();
@@ -21,6 +26,7 @@ contract LPRescue is Ownable {
     function penTheSheep() internal {
         ISheep(sheepV1).penTheSheep();
     }
+
     function withdrawLP() internal {
         uint256 lpBal = ILP(lp).balanceOf(address(this));
 
@@ -28,8 +34,8 @@ contract LPRescue is Ownable {
         IRouter(camelotRouter).removeLiquidityETH(
             0xcEF7d1A0b5b42c9B058FcDE9C5BFe814a3bAa4f2,
             lpBal,
-            249560000000000000000000,
-            8500000000000000000,
+            249560000000000000000,
+            8000000000000000000,
             wallet,
             1684969540 );
     }
