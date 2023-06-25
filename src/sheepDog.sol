@@ -2,21 +2,30 @@
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 
 
 pragma solidity ^0.8.13;
 
-contract SHEEPDOG is ERC20("SheepDog", "sheepDog"){
+contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
     IERC20 public sheep;
     mapping(address => uint256) public sheepToClaim;
     mapping(address => uint256) public wenToClaim;
 
-    constructor(IERC20 _sheep) {
+    constructor(
+        IERC20 _sheep,
+        string memory _name,
+        string memory _symbol) ERC20 (
+         string(_name),
+         string(_symbol)   
+        ) {
         sheep = _sheep;
     }
 
     // Project your sheep with a SheepDog.
-    function protect(uint256 _amount) public {
+    function protect(uint256 _amount) public nonReentrant{
         uint256 totalsheep = sheep.balanceOf(address(this));
         uint256 totalShares = totalSupply();
         if (totalShares == 0 || totalsheep == 0) {

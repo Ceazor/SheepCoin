@@ -23,7 +23,7 @@ contract SheepTest is Test {
     function setUp() public {
         sheep = new SHEEP();
         wolf = new WOLF(sheepAddy, ceazor);
-        sheepDog = new SHEEPDOG(sheep);
+        sheepDog = new SHEEPDOG(sheep, "SheepDog", "sheepDOG");
         sheep.buildTheFarm(wolfAddy, sheepDogAddy, dumper); //TO:DO.. change these when ready
     }
 
