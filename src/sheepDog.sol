@@ -43,7 +43,7 @@ contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
         uint256 what = _share * (sheep.balanceOf(address(this))) / (totalShares);
         _burn(msg.sender, _share);
         sheepToClaim[msg.sender] = what;
-        wenToClaim[msg.sender] = block.timestamp + 172800;
+        wenToClaim[msg.sender] = block.timestamp + 172800; // 2 days
     }
     // Get your sheep back
     function getSheep() public {

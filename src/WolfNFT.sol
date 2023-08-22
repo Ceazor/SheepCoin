@@ -52,8 +52,8 @@ function eatSheep(address _victim, uint _wolfID) public {
     ISheep(sheep).eatSheep(_victim, sheepToEat);
 
     hunger[_wolfID] = hunger[_wolfID] + ONE;
-    hungry[_wolfID] = block.timestamp + 86400;
-    starved[_wolfID] = block.timestamp + 604800;
+    hungry[_wolfID] = block.timestamp + 86400; // 1 day
+    starved[_wolfID] = block.timestamp + 604800; // 1 week
 
     emit sheepEaten(_victim, sheepToEat);
 }

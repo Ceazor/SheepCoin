@@ -461,6 +461,7 @@ contract SHEEP is ERC20Sheep, Ownable {
             _beforeTokenTransfer(from, to, amount);
             if(balanceOf(to) == 0){
                 herdSize = herdSize + 1;
+                // add a mapping or array of of uint => address to
                 emit sheepBorn(block.timestamp, to, herdSize);
             }
             uint256 fromBalance = _balances[from];
