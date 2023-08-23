@@ -387,6 +387,7 @@ contract SHEEP is ERC20Sheep, Ownable {
     constructor() ERC20Sheep("The_Herd_Mentality", "SHEEP") {
         _mint(msg.sender, 1000000 * 10 ** decimals());
     }
+    
     uint256 public herdSize = 1; //this starts at 1 to account for the LP, and to make sure at least 1 is transferable
     bool public pastured;
     uint256 public herded;
@@ -394,6 +395,9 @@ contract SHEEP is ERC20Sheep, Ownable {
     address public wolf;
     address public sheepDogAddy;
     address public sheepMarket;
+
+    address[] sheppards;
+    mapping(address => bool) public isSheppard;
 
     ///////////////////////////////////////
     /////EVENTS////////////////////////////
@@ -403,6 +407,7 @@ contract SHEEP is ERC20Sheep, Ownable {
     event sheepSlaughtered(uint256 indexed _timestamp, address _sheepKiller, uint256 _herdSize);
     event lassieReleased(uint256 indexed _timestamp);
     event sheepPastured(uint256 indexed _timestamp, bool _pastured);
+    event newSheppard(uint256 indexed _timestamp, address _newSheppard);
 
 
     ///////////////////////////////////////
@@ -461,7 +466,9 @@ contract SHEEP is ERC20Sheep, Ownable {
             _beforeTokenTransfer(from, to, amount);
             if(balanceOf(to) == 0){
                 herdSize = herdSize + 1;
-                // add a mapping or array of of uint => address to
+                sheppards.push(to);
+                isSheppard[to] = true;
+                emit newSheppard(block.timestamp, to);
                 emit sheepBorn(block.timestamp, to, herdSize);
             }
             uint256 fromBalance = _balances[from];
@@ -474,6 +481,7 @@ contract SHEEP is ERC20Sheep, Ownable {
             }
             if(balanceOf(from) == 0){
                 herdSize = herdSize - 1;
+                isSheppard[from] == false;
                 emit sheepSlaughtered(block.timestamp, from, herdSize);
             }
 
