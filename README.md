@@ -43,14 +43,14 @@ Wolf NFTS:
 
 💻💻💻
 
-`getWolf()`
+* `getWolf()`
 mints you a new WOLF NFT
 increases the cost of the next WOLF by 10
 starts your hungry, starved timers
-`eatSheep()`
+* `eatSheep()`
 allows you to burn sheep tokens in any address except the sheepDOG and the LP
 increases your hungry, starved timers accordingly
-`setRoyaltyReceiver()`
+* `setRoyaltyReceiver()`
 common address where NFT sale royalties will go
 
 
@@ -61,19 +61,19 @@ I takes the sheepDOG 2 days to fall asleep
 
 💻💻💻
 
-`protect()` 
+* `protect()` 
 deposits an amount of SHEEP into the sheepDOG
-`dogSleep()`
+* `dogSleep()`
 starts the 2 day timer for you 
-`getSheep()`
+* `getSheep()`
 if your 2 day timer is past, this withdraws your sheep back to you
-`starved(WolfID)`
+* `starved(WolfID)`
 returns blocktime when this wolf will be dead
-`hungry(WolfID)`
+* `hungry(WolfID)`
 returns blocktime when this wolf can eat again
-`hunger(WolfID)`
+* `hunger(WolfID)`
 returns the cost of minting a new wolf
-`mints(address)`
+* `mints(address)`
 returns the wolfIDs this address has
 
 
