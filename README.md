@@ -12,19 +12,19 @@ This will stop early buyers from buying up huge allocations. and also help to re
 
 💻💻💻
 
-`herdSize()`
+* `herdSize()`
 Keep in mind that you must take note of the token holder number. If you attempt to cause more to be transferred the transaction will fail. 
 To see the current token holders you can query the variable `herdSize()` as seen in the image below. 
-`takeToPasture()` 
+*  `takeToPasture()` 
 This function will likely only be called once, and it turns on the `transfer()` restrictions. A value of true means transfers are restricted.
-`releaseLassie()`
+* `releaseLassie()`
 This function will only be called if they experiment is considered a failure and the original LP needs to be dismantled. This has will start the 1 week cool down. 
 If this function is called, the bots will notify you, and it might then be a good idea to exit any SHEEP tokens you are holding back to the right side token.
-`herded()`
+* `herded()`
 This is a timestamp of when a cool down has been started. This number plus `604800` will be the time when the transfer restrictions can be turned off.
-`penTheSheep()`
+* `penTheSheep()`
 This function will turn off the transfer restrictions after the cooldown has passed.
-`eatSheep()`
+* `eatSheep()`
 This function will burn SHEEP in any address except the LP and the SheepDOG. It can only be called by the WOLF NFTs
 
 🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺
