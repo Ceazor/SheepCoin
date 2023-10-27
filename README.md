@@ -11,6 +11,7 @@ Its basic premise is that the transfer function is restricted by the token holde
 This will stop early buyers from buying up huge allocations. and also help to restrict wallets from emptying out all their tokens. 
 
 💻💻💻
+
 `herdSize()`
 Keep in mind that you must take note of the token holder number. If you attempt to cause more to be transferred the transaction will fail. 
 To see the current token holders you can query the variable `herdSize()` as seen in the image below. 
@@ -41,6 +42,7 @@ Wolf NFTS:
 * can eat any SHEEP anywhere except in the LP and the sheepDOG(see below)
 
 💻💻💻
+
 `getWolf()`
 mints you a new WOLF NFT
 increases the cost of the next WOLF by 10
@@ -58,6 +60,7 @@ The sheepDOG is a safe place for sheep. He will protect them from the WOLF NFTs,
 I takes the sheepDOG 2 days to fall asleep
 
 💻💻💻
+
 `protect()` 
 deposits an amount of SHEEP into the sheepDOG
 `dogSleep()`
@@ -75,6 +78,7 @@ returns the wolfIDs this address has
 
 
 🔥🛖
+
 The BurnDownTheCabin is for burning the LP tokens if the deployer has be donated some amount. Ideally, the amount of tokens should
 equal the amount of right side token that was put in the LP for init liquidity.
 
