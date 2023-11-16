@@ -5,8 +5,10 @@
 This is a novel MemeCoin project
 
 Its basic premise is that the transfer function is restricted by the token holder count.
-🐑 = 1 token can transfer
-🐑🐑 = 2 tokens can transfer
+
+🐑HerdSize = 1 token can transfer
+
+🐑🐑HerdSize = 2 tokens can transfer
 
 This will stop early buyers from buying up huge allocations. and also help to restrict wallets from emptying out all their tokens. 
 
