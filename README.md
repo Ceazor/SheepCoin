@@ -10,6 +10,8 @@ Its basic premise is that the transfer function is restricted by the token holde
 
 🐑🐑HerdSize = 2 tokens can transfer
 
+Herdsize is a measurement of wallets and not token supply
+
 This will stop early buyers from buying up huge allocations. and also help to restrict wallets from emptying out all their tokens. 
 
 💻💻💻
