@@ -33,10 +33,10 @@ This function will burn SHEEP in any address except the LP and the SheepDOG. It 
 
 🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺
 
-The Wolf NFT has the power to EAT sheep. To get a wolf you need to feed it some SHEEP. The 1st WOLF costs 10 Sheep, then each WOLF there after is 10 more Sheep
-* Wolf 1 = 10 SHEEP
-* Wolf 2 = 20 SHEEP
-* Wolf 3 = 30 SHEEP
+The Wolf NFT has the power to EAT sheep. To get a wolf you need to feed it some SHEEP. The 1st WOLF costs 1 Sheep, then each WOLF there after is 1 more Sheep
+* Wolf 1 = 1 SHEEP
+* Wolf 2 = 2 SHEEP
+* Wolf 3 = 3 SHEEP
 
 Wolf NFTs get hungry and can even starve to death, but they also do get full and grow. 
 Wolf NFTS:

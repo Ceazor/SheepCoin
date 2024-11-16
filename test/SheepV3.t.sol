@@ -125,9 +125,9 @@ contract SheepTest is Test {
         vm.startPrank(ceazor);
         sheep.approve(wolfAddy, 10000000 * 1e18);
         wolf.getWolf();
-        assert(sheep.balanceOf(ceazor) == sendSheep - TEN);
+        assert(sheep.balanceOf(ceazor) == sendSheep - ONE);
         wolf.getWolf();
-        assert(sheep.balanceOf(ceazor) == 0);
+        assert(sheep.balanceOf(ceazor) == sendSheep - ONE - ONE - ONE);
     }
 
     function testWolvesEat() public {

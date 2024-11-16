@@ -9,16 +9,16 @@ import "src/interfaces/ISheep.sol";
 
 
 contract WOLF is ERC721, Ownable {
+    uint256 public constant ONE = 1 * 1e18;
+
     address public sheep;
-    uint256 public mating = 10 * 1e18;
+    uint256 public mating = ONE;
     mapping(uint256 => uint256) public starved;
     mapping(uint256 => uint256) public hungry;
     mapping(uint256 => uint256) public hunger;
     mapping(address => uint256) public mints;
     uint256 wolfID = 0;
 
-    uint256 public constant ONE = 1 * 1e18;
-    uint256 public constant TEN = 10 * 1e18;
 
     address public royaltyReceiver;
 
@@ -33,7 +33,7 @@ contract WOLF is ERC721, Ownable {
 
 function getWolf() public {
     ISheep(sheep).eatSheep(msg.sender, mating);
-    mating = mating + TEN;
+    mating = mating + ONE;
 
     _safeMint(msg.sender, wolfID);
     emit cryWolf(msg.sender, wolfID);
