@@ -13,28 +13,34 @@ contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
     IERC20 public sheep;
     mapping(address => uint256) public sheepToClaim;
     mapping(address => uint256) public wenToClaim;
+    address public sheppard;
 
     constructor(
+        address _sheppard,
         IERC20 _sheep,
         string memory _name,
         string memory _symbol) ERC20 (
          string(_name),
-         string(_symbol)   
+         string(_symbol) 
         ) {
         sheep = _sheep;
+        sheppard = _sheppard;
     }
 
-    // Project your sheep with a SheepDog.
+    // Project your sheep with a SheepDog. But you have to pay 1% to the sheppard
     function protect(uint256 _amount) public nonReentrant{
         uint256 totalsheep = sheep.balanceOf(address(this));
         uint256 totalShares = totalSupply();
+        uint256 _inAmount = _amount - (_amount * 10 / 1000);
+        uint256 _dogFood = _amount - _inAmount;
         if (totalShares == 0 || totalsheep == 0) {
-            _mint(msg.sender, _amount);
+            _mint(msg.sender, _inAmount);
         } else {
-            uint256 what = _amount * (totalShares) / (totalsheep);
+            uint256 what = _inAmount * (totalShares) / (totalsheep);
             _mint(msg.sender, what);
         }
-        sheep.transferFrom(msg.sender, address(this), _amount);
+        sheep.transferFrom(msg.sender, sheppard, _dogFood);
+        sheep.transferFrom(msg.sender, address(this), _inAmount);
     }
 
     // Put your sheepDog to sleep so you can move the sheep.

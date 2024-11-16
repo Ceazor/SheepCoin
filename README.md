@@ -61,7 +61,7 @@ common address where NFT sale royalties will go
 🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶
 
 The sheepDOG is a safe place for sheep. He will protect them from the WOLF NFTs, but he needs to fall asleep before you can take your SHEEP.
-I takes the sheepDOG 2 days to fall asleep
+I takes the sheepDOG 2 days to fall asleep. The sheppard will also take 1% of the sheep you put in to feed his dog.
 
 💻💻💻
 
