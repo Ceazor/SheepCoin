@@ -241,6 +241,41 @@ contract SheepTest is Test {
             vm.warp(block.timestamp + 172600);
             sheepDog.getSheep();
     }
+    function testSheepDogNoReduceHerdsize() public {
+        sheep.takeToPasture();
+        sheep.transfer(ceazor, ONE);
+        sheep.transfer(dan, ONE + ONE);
+        sheep.transfer(dumper, ONE + ONE + ONE);
+        assert(sheep.herdSize() == 4);
+        vm.startPrank(dumper);
+            uint256 dumperBal = sheep.balanceOf(dumper);
+            sheep.approve(sheepDogAddy, dumperBal);
+            sheepDog.protect(dumperBal);
+            assert(sheep.balanceOf(dumper) == 0);
+            assert(sheep.herdSize() == 5); //this increased not cause sheepDog, but fee to Sheppard
 
+    }
+    function testSheepDogExemptFromHerdSize() public {
+        sheep.takeToPasture();
+        sheep.transfer(ceazor, ONE);
+        sheep.transfer(dan, ONE + ONE);
+        sheep.transfer(dan, ONE + ONE);
+        sheep.transfer(dan, ONE + ONE);
+        assert(sheep.herdSize() == 3);
+        vm.startPrank(dan);
+            uint256 danBal = sheep.balanceOf(dan);
+            sheep.approve(sheepDogAddy, danBal);
+            sheepDog.protect(ONE + ONE);
+            sheepDog.protect(ONE + ONE);
+            sheepDog.protect(ONE + ONE);
+            assert(sheep.balanceOf(dan) == 0);
+            assert(sheep.herdSize() == 4); //this increased not cause sheepDog, but fee to Sheppard
+                uint256 danDogBal = sheepDog.balanceOf(dan);
+                sheepDog.dogSleep(danDogBal);
+                vm.warp(block.timestamp + 172800);
+                sheepDog.getSheep(); //sheepDog is exempt from herdSize
+
+
+    }
 
 }

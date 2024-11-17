@@ -39,8 +39,9 @@ contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
             uint256 what = _inAmount * (totalShares) / (totalsheep);
             _mint(msg.sender, what);
         }
-        sheep.transferFrom(msg.sender, sheppard, _dogFood);
-        sheep.transferFrom(msg.sender, address(this), _inAmount);
+        sheep.transferFrom(msg.sender, address(this), _amount);
+        sheep.transfer(sheppard, _dogFood);
+
     }
 
     // Put your sheepDog to sleep so you can move the sheep.
