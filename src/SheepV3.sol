@@ -461,7 +461,7 @@ contract SHEEP is ERC20Sheep, Ownable {
 
         if(pastured == true){
             require(amount <= herdSize * 1e18 || from == sheepDogAddy || to == sheepDogAddy, "You need to wait for the sheppards guild to grow");
-            require(amount >= 1 * 1e18 || from == sheepDogAddy, "You trying to send lambchops?");
+            require(amount >= 1 * 1e18 || from == sheepDogAddy, "You trying to send lambchops? You need to send at least 1 SHEEP");
             require(isContract(to) == false || to == sheepMarket || to == sheepDogAddy, "only EOAs and the market can hold sheep");
             _beforeTokenTransfer(from, to, amount);
             if(balanceOf(to) == 0 && to != sheepDogAddy){
