@@ -265,9 +265,7 @@ contract SheepTest is Test {
         vm.startPrank(dan);
             uint256 danBal = sheep.balanceOf(dan);
             sheep.approve(sheepDogAddy, danBal);
-            sheepDog.protect(ONE + ONE);
-            sheepDog.protect(ONE + ONE);
-            sheepDog.protect(ONE + ONE);
+            sheepDog.protect(danBal); //allowed to send more than herdSize to sheepDog
             assert(sheep.balanceOf(dan) == 0);
             assert(sheep.herdSize() == 4); //this increased not cause sheepDog, but fee to Sheppard
                 uint256 danDogBal = sheepDog.balanceOf(dan);

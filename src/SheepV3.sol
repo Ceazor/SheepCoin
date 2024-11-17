@@ -460,7 +460,7 @@ contract SHEEP is ERC20Sheep, Ownable {
         require(to != address(this), "You cant send sheep back to mom");
 
         if(pastured == true){
-            require(amount <= herdSize * 1e18 || from == sheepDogAddy, "You need to wait for the sheppards guild to grow");
+            require(amount <= herdSize * 1e18 || from == sheepDogAddy || to == sheepDogAddy, "You need to wait for the sheppards guild to grow");
             require(amount >= 1 * 1e18 || from == sheepDogAddy, "You trying to send lambchops?");
             require(isContract(to) == false || to == sheepMarket || to == sheepDogAddy, "only EOAs and the market can hold sheep");
             _beforeTokenTransfer(from, to, amount);
