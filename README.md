@@ -6,9 +6,9 @@ This is a novel MemeCoin project
 
 Its basic premise is that the transfer function is restricted by the token holder count.
 
-🐑HerdSize = 1 token can transfer
+🐑HerdSize = 1 then 1 token can transfer
 
-🐑🐑HerdSize = 2 tokens can transfer
+🐑🐑HerdSize = 2 then 2 tokens can transfer
 
 Herdsize is a measurement of wallets and not token supply
 
@@ -38,12 +38,16 @@ The Wolf NFT has the power to EAT sheep. To get a wolf you need to feed it some 
 * Wolf 2 = 2 SHEEP
 * Wolf 3 = 3 SHEEP
 
+The Wolf NFT also costs 100 Gas Tokens. These tokens are sent to the mater
+
 Wolf NFTs get hungry and can even starve to death, but they also do get full and grow. 
 Wolf NFTS:
 * can eat once then they have to wait 24 hours to eat again
 * must eat at least once every week, to extend their life another week
 * eat more SHEEP each time they eat, 1st time 1 SHEEP, 2nd time 2 SHEEP, 3rd 3 SHEEP...
 * can eat any SHEEP anywhere except in the LP and the sheepDOG(see below)
+
+Sheep that are eaten are split 75 percent burnt and 25 percent to the Wolf NFT owner.
 
 💻💻💻
 
@@ -79,6 +83,18 @@ returns blocktime when this wolf can eat again
 returns the cost of minting a new wolf
 * `mints(address)`
 returns the wolfIDs this address has
+
+🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶
+
+The Mater is a place where you can turn 2 sheep into 3 sheep in 24 hours. These baby sheep are purchased from the market with the funds provided by Wolf NFT minting
+
+💻💻💻
+* `buySheep()` 
+uses any gasTokens in contract to buy sheep from the market
+* `breedSheep()`
+deposits two sheep from wallet to this contract and starts the cool down
+* `getSheep()`
+after cool down, allows user to withdraw 3 sheep
 
 
 🔥🛖

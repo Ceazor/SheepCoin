@@ -17,6 +17,8 @@ contract SheepTest is Test {
     address constant wolfAddy = 0x2e234DAe75C793f67A35089C9d99245E1C58470b;
     address constant sheepDogAddy = 0xF62849F9A0B5Bf2913b396098F7c7019b51A820a;
     address constant sheppard = 0x06b16991B53632C2362267579AE7C4863c72fDb8;
+    address constant wGasToken = ;
+    address constant mater = 0xF13A82597298e2c8A081774bE068d4c47B5d1c98;
 
     uint256 public constant ONE = 1 * 1e18;
     uint256 public constant TEN = 10 * 1e18;
@@ -24,7 +26,7 @@ contract SheepTest is Test {
 
     function setUp() public {
         sheep = new SHEEP();
-        wolf = new WOLF(sheepAddy, ceazor);
+        wolf = new WOLF(sheepAddy, ceazor, wGasToken, mater);
         sheepDog = new SHEEPDOG(sheppard, sheep, "SheepDog", "sheepDOG");
         sheep.buildTheFarm(wolfAddy, sheepDogAddy, dumper); //TO:DO.. change these when ready
     }
@@ -144,6 +146,20 @@ contract SheepTest is Test {
             vm.warp(block.timestamp + 86401);
             wolf.eatSheep(dan, 0);
             assert(sheep.balanceOf(dan) == sendSheepDan - (ONE + ONE + ONE));
+    }
+    function testFailOthersWolfEat() public {
+        uint sendSheep = TEN + TEN + TEN;
+        sheep.transfer(ceazor, sendSheep);
+        uint sendSheepDan = TEN;
+        sheep.transfer(dan, sendSheepDan);        
+        vm.startPrank(ceazor);
+            sheep.approve(wolfAddy, 10000000 * 1e18);
+            wolf.getWolf();
+            vm.warp(block.timestamp + 86401);
+        vm.stopPrank;
+        vm.startPrank(dumper);
+            wolf.eatSheep(dan, 0);
+            assert(sheep.balanceOf(dan) == sendSheepDan - ONE);
     }
 
     function testFailWolvesEatEarly() public {
