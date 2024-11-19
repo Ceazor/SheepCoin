@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import "../src/SheepV3.sol";
 import "../src/WolfNFT.sol";
 import "../src/sheepDog.sol";
+import "../src/gasToken.sol";
 
 contract SheepTest is Test {
     SHEEP public sheep;
@@ -17,7 +18,6 @@ contract SheepTest is Test {
     address constant wolfAddy = 0x2e234DAe75C793f67A35089C9d99245E1C58470b;
     address constant sheepDogAddy = 0xF62849F9A0B5Bf2913b396098F7c7019b51A820a;
     address constant sheppard = 0x06b16991B53632C2362267579AE7C4863c72fDb8;
-    address constant wGasToken = ;
     address constant mater = 0xF13A82597298e2c8A081774bE068d4c47B5d1c98;
 
     uint256 public constant ONE = 1 * 1e18;
@@ -26,6 +26,7 @@ contract SheepTest is Test {
 
     function setUp() public {
         sheep = new SHEEP();
+        wGasToken = new wGAS();
         wolf = new WOLF(sheepAddy, ceazor, wGasToken, mater);
         sheepDog = new SHEEPDOG(sheppard, sheep, "SheepDog", "sheepDOG");
         sheep.buildTheFarm(wolfAddy, sheepDogAddy, dumper); //TO:DO.. change these when ready
