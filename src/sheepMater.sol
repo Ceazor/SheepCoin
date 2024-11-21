@@ -18,6 +18,10 @@ contract SHEEPMATER is Ownable, ReentrancyGuard{
     mapping(address => bool) public breeding;
     uint256 lambBal = 0;
 
+    uint256 constant ONE = 1 * 1e18;
+    uint256 constant TWO = 2 * 1e18;
+    uint256 constant THREE = 3 * 1e18;
+
     constructor(address _sheep, address _gasToken, address _router) {
         sheep = _sheep;
         wGasToken = _gasToken;
@@ -26,9 +30,10 @@ contract SHEEPMATER is Ownable, ReentrancyGuard{
     //Buy SHEEP with gasToken
     function buySheep() public {
         uint256 balGasToken = IERC20(wGasToken).balanceOf(address(this));
+        IERC20(wGasToken).approve(router,balGasToken);
 
         uint256 sheepBalBefore = IERC20(sheep).balanceOf(address(this));
-        IRouter(router).swapExactTokensForTokensSimple(balGasToken, 1, wGasToken, sheep, false, address(this), block.timestamp + 10);
+        IRouter(router).swapExactTokensForTokensSimple(balGasToken, ONE, wGasToken, sheep, false, address(this), block.timestamp + 10);
         uint256 sheepBalAfter = IERC20(sheep).balanceOf(address(this));
         uint256 sheepNewAdd = sheepBalAfter - sheepBalBefore; 
 
@@ -38,14 +43,14 @@ contract SHEEPMATER is Ownable, ReentrancyGuard{
 
     // Breed your sheep with the Sheep Mater. 2 for 3
     function breed() public nonReentrant{
-        if (IERC20(wGasToken).balanceOf(address(this)) >= 1){
+        if (IERC20(wGasToken).balanceOf(address(this)) >= ONE){
             buySheep();
         }
-        if (lambBal >= 1 && !breeding[msg.sender]){
-            IERC20(sheep).transferFrom(msg.sender, address(this), 2 * 1e18);
-            owedSheep[msg.sender] += 3;
+        if (lambBal >= ONE && !breeding[msg.sender]){
+            IERC20(sheep).transferFrom(msg.sender, address(this), TWO);
+            owedSheep[msg.sender] += THREE;
             wenBorn[msg.sender] = block.timestamp + 86400;
-            lambBal -=1;
+            lambBal -= ONE;
         }
 
     }

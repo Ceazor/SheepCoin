@@ -77,7 +77,7 @@ contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
     ///////////////////////////////////////////////
 
     function getCurrentRent(address _user) public view returns (uint256 _currentRent) {
-        uint256 _calcRent = (block.timestamp - rentStart[_user]) / 86400 * 10;
+        uint256 _calcRent = (block.timestamp - rentStart[_user]) / 86400 * 10 * 1e18;
         return _calcRent;
     }
 }
