@@ -65,7 +65,7 @@ common address where NFT sale royalties will go
 🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶
 
 The sheepDOG is a safe place for sheep. He will protect them from the WOLF NFTs, but he needs to fall asleep before you can take your SHEEP.
-I takes the sheepDOG 2 days to fall asleep. The sheppard will also take 1% of the sheep you put in to feed his dog.
+I takes the sheepDOG 2 days to fall asleep. Finally, you will need to pay 10 wGasTokens for each day you are protected by the sheepDog. 95% of these funds goto the Mater (see below) 5% to the team.
 
 💻💻💻
 

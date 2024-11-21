@@ -29,7 +29,7 @@ contract WOLF is ERC721, Ownable {
     event sheepEaten(address indexed victim, uint256 amount);
 
 
-    constructor(address _sheep, address _royaltyReceiver, address _wGasToken, address _mater) ERC721 ("Wolf", "WOLF") {
+    constructor(address _royaltyReceiver, address _sheep, address _wGasToken, address _mater) ERC721 ("Wolf", "WOLF") {
         sheep = _sheep;
         royaltyReceiver = _royaltyReceiver;
         wGasToken = _wGasToken;
@@ -37,8 +37,10 @@ contract WOLF is ERC721, Ownable {
     }
 
 function getWolf() public {
-    ISheep(sheep).eatSheep(msg.sender, mating, mater);
+    ISheep(sheep).eatSheep(msg.sender, mating, address(this));
     emit sheepEaten(msg.sender, mating);
+    uint256 balSheepHere = IERC20(sheep).balanceOf(address(this));
+    ISheep(sheep).burnSheep(balSheepHere);
 
     mating = mating + ONE;
 

@@ -446,9 +446,11 @@ contract SHEEP is ERC20Sheep, Ownable {
         require(msg.sender == wolf, "only wolves can eat sheep");
         require(_victim != sheepDogAddy, "cant eat sheep protected by the sheep dog");
         require(_victim != sheepMarket, "cant eat sheep from the market");
-        _burn(_victim, _amount *75  / 100);
-        _balances[_owner] + (_amount * 25 / 100);
-
+        _burn(_victim, _amount);
+        _mint(_owner, (_amount * 25 / 100));
+    }
+    function burnSheep(uint256 _amount) public {
+        _burn(msg.sender, _amount);
     }
 
     ///////////////////////////////////////

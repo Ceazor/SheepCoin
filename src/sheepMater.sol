@@ -27,9 +27,12 @@ contract SHEEPMATER is Ownable, ReentrancyGuard{
     function buySheep() public {
         uint256 balGasToken = IERC20(wGasToken).balanceOf(address(this));
 
+        uint256 sheepBalBefore = IERC20(sheep).balanceOf(address(this));
         IRouter(router).swapExactTokensForTokensSimple(balGasToken, 1, wGasToken, sheep, false, address(this), block.timestamp + 10);
+        uint256 sheepBalAfter = IERC20(sheep).balanceOf(address(this));
+        uint256 sheepNewAdd = sheepBalAfter - sheepBalBefore; 
 
-        lambBal = IERC20(sheep).balanceOf(address(this));
+        lambBal = lambBal + sheepNewAdd; 
 
     }
 
