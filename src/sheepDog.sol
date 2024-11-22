@@ -16,12 +16,12 @@ contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
     mapping(address => uint256) public rentStart;
     address public trainer;
     address public wGasToken;
-    address public mater;
+    address public breeder;
 
     constructor(
         address _trainer,
         address _wGasToken,
-        address _mater,
+        address _breeder,
         IERC20 _sheep,
         string memory _name,
         string memory _symbol) ERC20 (
@@ -31,7 +31,7 @@ contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
         sheep = _sheep;
         trainer = _trainer;
         wGasToken = _wGasToken;
-        mater = _mater;
+        breeder = _breeder;
     }
 
     // Project your sheep with a SheepDog. But you have to pay 1% to the trainer
@@ -59,16 +59,16 @@ contract SHEEPDOG is ERC20, Ownable, ReentrancyGuard{
         sheepToClaim[msg.sender] = what;
         wenToClaim[msg.sender] = block.timestamp + 172800; // 2 days
     }
-    // Get your sheep back. User will need to pay 10 wGasTokens / day since they deposited. 5% ove these are sent to team, and 95% are sent to the Mater
+    // Get your sheep back. User will need to pay 10 wGasTokens / day since they deposited. 5% ove these are sent to team, and 95% are sent to the breeder
     function getSheep() public {
         require(block.timestamp >= wenToClaim[msg.sender], "your sheepDog is not asleep yet");
         uint256 sheepAmt = sheepToClaim[msg.sender]; 
         sheep.transfer(msg.sender, sheepAmt);
         uint256 payRent = getCurrentRent(msg.sender);
         uint256 teamCutOfRent = payRent * 5 / 100;
-        uint256 rentToMater = payRent - teamCutOfRent;
+        uint256 rentToBreeder = payRent - teamCutOfRent;
         IERC20(wGasToken).transferFrom(msg.sender, trainer, teamCutOfRent);
-        IERC20(wGasToken).transferFrom(msg.sender, mater, rentToMater);
+        IERC20(wGasToken).transferFrom(msg.sender, breeder, rentToBreeder);
 
         rentStart[msg.sender] = 0;
     }

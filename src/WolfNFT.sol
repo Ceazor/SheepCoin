@@ -22,18 +22,18 @@ contract WOLF is ERC721, Ownable {
     uint256 wolfID = 0;
 
     address public wGasToken;
-    address public mater;
+    address public breeder;
     address public royaltyReceiver;
 
     event cryWolf(address indexed minter, uint256 amount);
     event sheepEaten(address indexed victim, uint256 amount);
 
 
-    constructor(address _royaltyReceiver, address _sheep, address _wGasToken, address _mater) ERC721 ("Wolf", "WOLF") {
+    constructor(address _royaltyReceiver, address _sheep, address _wGasToken, address _breeder) ERC721 ("Wolf", "WOLF") {
         sheep = _sheep;
         royaltyReceiver = _royaltyReceiver;
         wGasToken = _wGasToken;
-        mater = _mater;
+        breeder = _breeder;
     }
 
 function getWolf() public {
@@ -44,7 +44,7 @@ function getWolf() public {
 
     mating = mating + ONE;
 
-    IERC20(wGasToken).transferFrom(msg.sender, mater, HUNDRED);
+    IERC20(wGasToken).transferFrom(msg.sender, breeder, HUNDRED);
 
     _safeMint(msg.sender, wolfID);
     emit cryWolf(msg.sender, wolfID);
@@ -87,8 +87,8 @@ function royaltyInfo(uint256 _tokenId, uint256 _salePrice) external view returns
     /////OWNER FUNCTIONS/////////////////
     ///////////////////////////////////////
 
-function setMater(address _newMater) public onlyOwner {
-    mater = _newMater;
+function setbreeder(address _newbreeder) public onlyOwner {
+    breeder = _newbreeder;
 }
 
 }

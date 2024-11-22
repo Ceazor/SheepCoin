@@ -9,7 +9,7 @@ import "src/interfaces/IRouter.sol";
 
 pragma solidity ^0.8.13;
 
-contract SHEEPMATER is Ownable, ReentrancyGuard{
+contract SHEEPBREEDER is Ownable, ReentrancyGuard{
     address public sheep;
     address public wGasToken;
     address public router;
@@ -41,7 +41,7 @@ contract SHEEPMATER is Ownable, ReentrancyGuard{
 
     }
 
-    // Breed your sheep with the Sheep Mater. 2 for 3
+    // Breed your sheep with the Sheep breeder. 2 for 3
     function breed() public nonReentrant{
         if (IERC20(wGasToken).balanceOf(address(this)) >= ONE){
             buySheep();
@@ -56,7 +56,7 @@ contract SHEEPMATER is Ownable, ReentrancyGuard{
     }
     // Get your sheep back and their baby
     function getSheep() public {
-        require(block.timestamp >= wenBorn[msg.sender], "your shee are not finished breeding");
+        require(block.timestamp >= wenBorn[msg.sender], "your sheep are not finished breeding");
         uint256 sheepAmt = owedSheep[msg.sender]; 
         IERC20(sheep).transfer(msg.sender, sheepAmt);
         owedSheep[msg.sender] = 0;
