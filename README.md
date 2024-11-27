@@ -86,7 +86,7 @@ returns the wolfIDs this address has
 
 🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶
 
-The Mater is a place where you can turn 2 sheep into 3 sheep in 24 hours. These baby sheep are purchased from the market with the funds provided by Wolf NFT minting and the sheepDog renting.
+The Breeder is a place where you can turn 2 sheep into 3 sheep in 24 hours. These baby sheep are purchased from the market with the funds provided by Wolf NFT minting and the sheepDog renting.
 
 💻💻💻
 * `buySheep()` 
