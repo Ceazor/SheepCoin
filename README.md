@@ -38,7 +38,7 @@ The Wolf NFT has the power to EAT sheep. To get a wolf you need to feed it some 
 * Wolf 2 = 2 SHEEP
 * Wolf 3 = 3 SHEEP
 
-The Wolf NFT also costs 100 Gas Tokens. These tokens are sent to the mater
+The Wolf NFT also costs 100 Gas Tokens. These tokens are sent to the breeder.
 
 Wolf NFTs get hungry and can even starve to death, but they also do get full and grow. 
 Wolf NFTS:
@@ -86,7 +86,7 @@ returns the wolfIDs this address has
 
 🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶
 
-The Mater is a place where you can turn 2 sheep into 3 sheep in 24 hours. These baby sheep are purchased from the market with the funds provided by Wolf NFT minting
+The Mater is a place where you can turn 2 sheep into 3 sheep in 24 hours. These baby sheep are purchased from the market with the funds provided by Wolf NFT minting and the sheepDog renting.
 
 💻💻💻
 * `buySheep()` 
