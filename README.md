@@ -45,7 +45,7 @@ Wolf NFTS:
 * can eat once then they have to wait 24 hours to eat again
 * must eat at least once every week, to extend their life another week
 * eat more SHEEP each time they eat, 1st time 1 SHEEP, 2nd time 2 SHEEP, 3rd 3 SHEEP...
-* can eat any SHEEP anywhere except in the LP and the sheepDOG(see below)
+* can eat any SHEEP anywhere except in the LP, the Breeder, and the sheepDOG(see below)
 
 Sheep that are eaten are split 75 percent burnt and 25 percent to the Wolf NFT owner.
 
