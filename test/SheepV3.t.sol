@@ -30,7 +30,7 @@ contract SheepTest is Test {
         sheep = new SHEEP(address(wGasToken),pol);
         router = new FAKEROUTER();
 
-        sheepDog = new SHEEPDOG(address(sheep));
+        sheepDog = new SHEEPDOG(address(sheep),address(router));
         wolf = new WOLF(address(sheep), address(sheepDog),pair);
 
         sheep.buildTheFarm(address(wolf)); //TO:DO.. change these when ready

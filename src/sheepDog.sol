@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "src/interfaces/ISheep.sol";
+import "src/interfaces/IRouter.sol";
 
 pragma solidity ^0.8.13;
 
@@ -18,26 +19,27 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
     mapping(address => uint256) public wenToClaim;
     mapping(address => uint256) public rentStart;
     address public wGasToken;
+    address public router;
 
-    constructor(address _sheep)  {
+    constructor(address _sheep,address _router)  {
         sheep = _sheep;
         wGasToken = ISheep(sheep).wGasToken();
+        router = _router;
     }
 
      //Buy SHEEP with gasToken
-    // function buySheep() public {
-    // todo get the team fee here
-    //     uint256 balGasToken = IERC20(wGasToken).balanceOf(address(this));
-    //     IERC20(wGasToken).approve(router,balGasToken);
+    function buySheep() public {
 
-    //     uint256 sheepBalBefore = IERC20(sheep).balanceOf(address(this));
-    //     IRouter(router).swapExactTokensForTokensSimple(balGasToken, ONE, wGasToken, sheep, false, address(this), block.timestamp + 10);
-    //     uint256 sheepBalAfter = IERC20(sheep).balanceOf(address(this));
-    //     uint256 sheepNewAdd = sheepBalAfter - sheepBalBefore; 
+        uint256 balGasToken = IERC20(wGasToken).balanceOf(address(this));
+        uint teamFee = balGasToken * 5 / 100;
+        uint buyAmount = balGasToken - teamFee;
 
-    //     lambBal = lambBal + sheepNewAdd; 
-
-    // }
+        IERC20(wGasToken).transfer(ISheep(sheep).owner(), teamFee);
+        
+        IERC20(wGasToken).approve(router,buyAmount);
+        IRouter(router).swapExactTokensForTokensSimple(balGasToken, 1e18, wGasToken, sheep, false, address(this), block.timestamp + 10);
+  
+    }
 
     // Project your sheep with a SheepDog. But you have to pay 1% to the trainer
     function protect(uint256 _amount) public nonReentrant{

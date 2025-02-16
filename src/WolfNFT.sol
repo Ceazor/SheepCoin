@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "src/interfaces/ISheep.sol";
+import "src/interfaces/IPair.sol";
 
 
 contract WOLF is ERC721, Ownable {
@@ -79,7 +80,9 @@ contract WOLF is ERC721, Ownable {
         require(!canNotBeEaten[_victim],"can not eat from this address");
         ISheep(sheep).eatSheep(_victim, _sheepToEat, msg.sender);
 
-        //TODO if market do the sync
+        if(_victim == sheepMarket) {
+            IPair(sheepMarket).sync();
+        }
     }
 
     ///////////////////////////////////////
