@@ -6,7 +6,6 @@ import "../src/SheepV3.sol";
 import "../src/WolfNFT.sol";
 import "../src/sheepDog.sol";
 import "../src/gasToken.sol";
-import "../src/sheepBreeder.sol";
 import "../src/fakeRouter.sol";
 
 contract SheepTest is Test {
@@ -14,7 +13,6 @@ contract SheepTest is Test {
     WOLF public wolf;
     SHEEPDOG public sheepDog;
     wGAS public wGasToken;
-    SHEEPBREEDER public breeder;
     FAKEROUTER public router;
 
     address constant ceazor = 0x3c5Aac016EF2F178e8699D6208796A2D67557fe2;
@@ -29,16 +27,12 @@ contract SheepTest is Test {
 
     function setUp() public {
         wGasToken = new wGAS();
-            sheep = new SHEEP(address(wGasToken),pol);
-        
-        
+        sheep = new SHEEP(address(wGasToken),pol);
         router = new FAKEROUTER();
 
-            breeder = new SHEEPBREEDER(address(sheep), address(wGasToken), address(router));
-            sheepDog = new SHEEPDOG(address(sheep));
-            wolf = new WOLF(address(sheep), address(sheepDog),pair);
+        sheepDog = new SHEEPDOG(address(sheep));
+        wolf = new WOLF(address(sheep), address(sheepDog),pair);
 
-        
         sheep.buildTheFarm(address(wolf)); //TO:DO.. change these when ready
 
         wGasToken.transfer(ceazor, HUNDRED * 2);
@@ -261,7 +255,7 @@ contract SheepTest is Test {
             sheepDog.getSheep();
             assert(sheep.balanceOf(dan) == HUNDRED);
             assert(wGasToken.balanceOf(trainer) == rent * 5 / 100);
-            assert(wGasToken.balanceOf(address(breeder)) == rent * 95 / 100);
+            assert(wGasToken.balanceOf(address(sheepDog)) == rent * 95 / 100);
 
     }
     function testLeaveSheepDogMulti() public {
@@ -277,7 +271,7 @@ contract SheepTest is Test {
             sheepDog.getSheep();
             assert(sheep.balanceOf(dan) == ONE);
             assert(wGasToken.balanceOf(trainer) == rentAmt * 5 / 100);
-            assert(wGasToken.balanceOf(address(breeder)) == rentAmt * 95 / 100);
+            assert(wGasToken.balanceOf(address(sheepDog)) == rentAmt * 95 / 100);
             sheepDog.dogSleep(ONE);
             vm.warp(block.timestamp + 172800);
             uint256 rentAmt2 = sheepDog.getCurrentRent(dan);
@@ -285,7 +279,7 @@ contract SheepTest is Test {
             sheepDog.getSheep();
             assert(sheep.balanceOf(dan) == ONE + ONE);
             assert(wGasToken.balanceOf(trainer) == (rentAmt + rentAmt2) * 5 / 100);
-            assert(wGasToken.balanceOf(address(breeder)) == (rentAmt + rentAmt2) * 95 / 100);
+            assert(wGasToken.balanceOf(address(sheepDog)) == (rentAmt + rentAmt2) * 95 / 100);
 
     }
     function testFailLeaveSheepDogEarly() public {
@@ -345,26 +339,6 @@ contract SheepTest is Test {
                 dan, block.timestamp + 1);
 
     }
-    function testBreeder() public {
-        sheep.takeOutOfPasture();
-        sheep.transfer(address(router), HUNDRED + HUNDRED);
-
-        uint sendSheep = HUNDRED;
-        sheep.transfer(ceazor, sendSheep);
-        vm.startPrank(ceazor);
-            sheep.approve(address(wolf), HUNDRED);
-            wGasToken.approve(address(wolf), HUNDRED + HUNDRED);
-            wolf.getWolf();
-            assert(wGasToken.balanceOf(address(breeder)) == HUNDRED);
-            IERC20(sheep).approve(address(breeder), ONE + ONE);
-            breeder.breed();
-            assert(wGasToken.balanceOf(address(breeder)) == 0);
-            sheep.balanceOf(address(breeder));
-
-            vm.warp(block.timestamp + 172800);
-            breeder.getSheep();
-            assert(sheep.balanceOf(address(breeder)) == (TEN - ONE));
-
-    }
+ 
 
 }
