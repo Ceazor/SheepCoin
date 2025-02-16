@@ -2,17 +2,11 @@
 
 🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑🐑
 
-This is a novel MemeCoin project
+This is a novel GameCoin project
 
-Its basic premise is that the transfer function is restricted by the token holder count.
+Its basic premise is that sheep left idle will be targets for the hungry wolves.
 
-🐑HerdSize = 1 then 1 token can transfer
-
-🐑🐑HerdSize = 2 then 2 tokens can transfer
-
-Herdsize is a measurement of wallets and not token supply
-
-This will stop early buyers from buying up huge allocations. and also help to restrict wallets from emptying out all their tokens. 
+🐑🐺🍖
 
 💻💻💻
 
@@ -29,23 +23,23 @@ This is a timestamp of when a cool down has been started. This number plus `6048
 * `penTheSheep()`
 This function will turn off the transfer restrictions after the cooldown has passed.
 * `eatSheep()`
-This function will burn SHEEP in any address except the LP and the SheepDOG. It can only be called by the WOLF NFTs
+This function will burn SHEEP in any address except the SheepDOG. It can only be called by the WOLF NFTs
 
 🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺🐺
 
 The Wolf NFT has the power to EAT sheep. To get a wolf you need to feed it some SHEEP. The 1st WOLF costs 1 Sheep, then each WOLF there after is 1 more Sheep
-* Wolf 1 = 1 SHEEP
-* Wolf 2 = 2 SHEEP
-* Wolf 3 = 3 SHEEP
+* Wolf #1 = 1 SHEEP
+* Wolf #2 = 2 SHEEP
+* Wolf #3 = 3 SHEEP
 
-The Wolf NFT also costs 100 Gas Tokens. These tokens are sent to the breeder.
+The Wolf NFT also costs a number of Network Gas Tokens. T95% of these funds goto breeding more SHEEP (see below) 5% to the team..
 
 Wolf NFTs get hungry and can even starve to death, but they also do get full and grow. 
 Wolf NFTS:
 * can eat once then they have to wait 24 hours to eat again
 * must eat at least once every week, to extend their life another week
-* eat more SHEEP each time they eat, 1st time 1 SHEEP, 2nd time 2 SHEEP, 3rd 3 SHEEP...
-* can eat any SHEEP anywhere except in the LP, the Breeder, and the sheepDOG(see below)
+* eat more SHEEP each time they eat, 1st time 1 SHEEP, 2nd time 2 SHEEP, 3rd 3 SHEEP...Up until a certain Maximum number.
+* can eat any SHEEP anywhere except in the Breeder, and the sheepDOG(see below)
 
 Sheep that are eaten are split 75 percent burnt and 25 percent to the Wolf NFT owner.
 
@@ -65,7 +59,7 @@ common address where NFT sale royalties will go
 🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶🐑🐶
 
 The sheepDOG is a safe place for sheep. He will protect them from the WOLF NFTs, but he needs to fall asleep before you can take your SHEEP.
-I takes the sheepDOG 2 days to fall asleep. Finally, you will need to pay 10 wGasTokens for each day you are protected by the sheepDog. 95% of these funds goto the Mater (see below) 5% to the team.
+I takes the sheepDOG 2 days to fall asleep. Finally, you will need to pay 10 Network Gas Tokens for each day you are protected by the sheepDog. 95% of these funds goto breeding more SHEEP (see below) 5% to the team.
 
 💻💻💻
 
@@ -86,7 +80,12 @@ returns the wolfIDs this address has
 
 🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶🐑🐑👶
 
-The Breeder is a place where you can turn 2 sheep into 3 sheep in 24 hours. These baby sheep are purchased from the market with the funds provided by Wolf NFT minting and the sheepDog renting.
+The breeding is a mechanic where fees are used to purchase SHEEP from the market and are given to people in the sheepDog prorata.
+
+
+//deprecated features below
+
+
 
 💻💻💻
 * `buySheep()` 
