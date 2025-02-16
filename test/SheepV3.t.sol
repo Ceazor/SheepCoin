@@ -35,7 +35,7 @@ contract SheepTest is Test {
         router = new FAKEROUTER();
 
             breeder = new SHEEPBREEDER(address(sheep), address(wGasToken), address(router));
-            sheepDog = new SHEEPDOG(trainer, address(wGasToken), address(breeder), IERC20(sheep), "SheepDog", "sheepDOG");
+            sheepDog = new SHEEPDOG(address(sheep));
             wolf = new WOLF(address(sheep), address(sheepDog),pair);
 
         
@@ -238,7 +238,7 @@ contract SheepTest is Test {
             sheepDog.protect(TEN);
             assert(sheep.balanceOf(dan)== 0);
             assert(sheep.balanceOf(address(sheepDog)) == TEN);
-            assert(sheepDog.balanceOf(dan) == TEN);
+            assert(sheepDog.sheepDogShares(dan) == TEN);
         vm.stopPrank();
         vm.startPrank(ceazor);
             sheep.approve(address(wolf), 10000000 * 1e18);
@@ -251,9 +251,9 @@ contract SheepTest is Test {
         vm.startPrank(dan);
             sheep.approve(address(sheepDog), HUNDRED);
             sheepDog.protect(HUNDRED);
-            uint256 danBal = sheepDog.balanceOf(dan);
+            uint256 danBal = sheepDog.sheepDogShares(dan);
             assert(sheep.balanceOf(dan) == 0);
-            assert(sheepDog.balanceOf(dan) == HUNDRED);
+            assert(sheepDog.sheepDogShares(dan) == HUNDRED);
             sheepDog.dogSleep(danBal);
             vm.warp(block.timestamp + 172800);
             uint256 rent = sheepDog.getCurrentRent(dan);
