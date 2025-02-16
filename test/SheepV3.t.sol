@@ -35,10 +35,11 @@ contract SheepTest is Test {
         router = new FAKEROUTER();
 
             breeder = new SHEEPBREEDER(address(sheep), address(wGasToken), address(router));
-            wolf = new WOLF(trainer, address(sheep), address(wGasToken), address(breeder));
             sheepDog = new SHEEPDOG(trainer, address(wGasToken), address(breeder), IERC20(sheep), "SheepDog", "sheepDOG");
+            wolf = new WOLF(address(sheep), address(sheepDog),pair);
+
         
-        sheep.buildTheFarm(address(wolf), address(sheepDog), pair); //TO:DO.. change these when ready
+        sheep.buildTheFarm(address(wolf)); //TO:DO.. change these when ready
 
         wGasToken.transfer(ceazor, HUNDRED * 2);
         wGasToken.transfer(dan, HUNDRED * 2);

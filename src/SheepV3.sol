@@ -388,21 +388,15 @@ contract SHEEP is ERC20Sheep, Ownable {
         wGasToken = _wGasToken;
         POL = _pol;
         
-        _mint(msg.sender, 1000000 * 10 ** decimals());
+        //_mint(msg.sender, 1000000 * 10 ** decimals());
     }
     
     bool public pastured = true;
     uint256 public immutable ONE_WEEK = 604800; //this is the delay on retrieving the LPs
     address public wolf;
-    address public sheepDogAddy;
-    address public sheepMarket;
-
-    address[] sheppards;
-    mapping(address => bool) public isSheppard;
     
     uint256 public mintPrice = 1; // 1 means 1 wGAS token for 1 SHEEP
     uint256 public teamCut = 25; // 25 = 2.5%
-
 
     address public immutable wGasToken;
 
@@ -445,11 +439,9 @@ contract SHEEP is ERC20Sheep, Ownable {
     }
    
     /// @notice This function will setup the filters for the eat the sheep burn function
-    function buildTheFarm(address _wolf, address _dog, address _market) public onlyOwner {
+    function buildTheFarm(address _wolf) public onlyOwner {
         require(wolf == address(0), "the farm is already built");
         wolf = _wolf;
-        sheepDogAddy = _dog;
-        sheepMarket = _market;
     }
 
     ///////////////////////////////////////
@@ -457,12 +449,11 @@ contract SHEEP is ERC20Sheep, Ownable {
     ///////////////////////////////////////
 
     function eatSheep(address _victim, uint256 _amount, address _owner) public {
-        require(msg.sender == wolf, "only wolves can eat sheep");
-        require(_victim != sheepDogAddy, "cant eat sheep protected by the sheep dog");
-        require(_victim != sheepMarket, "cant eat sheep from the market");
+        require(msg.sender == wolf, "only wolves can eat sheep"); // wolf is deciding if it can eat from the specific address
         _burn(_victim, _amount);
         _mint(_owner, (_amount * 25 / 100));
     }
+    
     function burnSheep(uint256 _amount) public {
         _burn(msg.sender, _amount);
     }
