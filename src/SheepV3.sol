@@ -384,13 +384,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SHEEP is ERC20Sheep, Ownable {
 
-    constructor() ERC20Sheep("The_Herd_Mentality", "SHEEP") {
+    constructor(address _wGasToken,address _pol) ERC20Sheep("The_Herd_Mentality", "SHEEP") {
+        wGasToken = _wGasToken;
+        POL = _pol;
+        
         _mint(msg.sender, 1000000 * 10 ** decimals());
     }
     
-    uint256 public herdSize = 1; //this starts at 1 to account for the LP, and to make sure at least 1 is transferable
-    bool public pastured;
-    uint256 public herded;
+    bool public pastured = true;
     uint256 public immutable ONE_WEEK = 604800; //this is the delay on retrieving the LPs
     address public wolf;
     address public sheepDogAddy;
@@ -398,6 +399,15 @@ contract SHEEP is ERC20Sheep, Ownable {
 
     address[] sheppards;
     mapping(address => bool) public isSheppard;
+    
+    uint256 public mintPrice = 1; // 1 means 1 wGAS token for 1 SHEEP
+    uint256 public teamCut = 25; // 25 = 2.5%
+
+
+    address public immutable wGasToken;
+
+    address public immutable POL; // address to send the tokens that are going to be used as POL
+
 
     ///////////////////////////////////////
     /////EVENTS////////////////////////////
@@ -409,27 +419,31 @@ contract SHEEP is ERC20Sheep, Ownable {
     event sheepPastured(uint256 indexed _timestamp, bool _pastured);
     event newSheppard(uint256 indexed _timestamp, address _newSheppard);
 
+    function mintForFee(uint256 _amount) public {
+        require(pastured,"You are to late");
+
+        uint mintFee = _amount * mintPrice;
+        uint teamFee = mintFee * teamCut / 1000;
+
+        IERC20(wGasToken).transferFrom(msg.sender,POL, mintFee- teamFee);
+        IERC20(wGasToken).transferFrom(msg.sender,owner(), teamFee);
+
+        uint polToMint = _amount - (teamCut * _amount / 1000);
+
+        _mint(msg.sender, _amount);
+        _mint(POL,polToMint);
+    }
 
     ///////////////////////////////////////
     /////SHEPPARD FUNCTIONS////////////////
     ///////////////////////////////////////
 
-    /// @notice This function is set once. It sets the sheep free to be traded and kills the mother(no new sheep)
-    function takeToPasture() public onlyOwner{
-        pastured = true;
-        emit sheepPastured(block.timestamp, pastured);
-    }
-    /// @notice This function is to start the cooldown on turning off the restrictions on transfer. 
-    function releaseLassie() public onlyOwner {
-        herded = block.timestamp;
-        emit lassieReleased(block.timestamp);
-    }
-    /// @notice This function will remove the limits on transfer. Required releaseLassie() is called first
-    function penTheSheep() public onlyOwner {
-        require(block.timestamp >= herded + ONE_WEEK, "Lassie is still herding the sheep");
+    /// @notice This function is set once. It sets the sheep free to be traded
+    function takeOutOfPasture() public onlyOwner{
         pastured = false;
         emit sheepPastured(block.timestamp, pastured);
     }
+   
     /// @notice This function will setup the filters for the eat the sheep burn function
     function buildTheFarm(address _wolf, address _dog, address _market) public onlyOwner {
         require(wolf == address(0), "the farm is already built");
@@ -462,52 +476,23 @@ contract SHEEP is ERC20Sheep, Ownable {
         require(from != address(0), "Sheep don't come from nothing");
         require(to != address(0), "This is a dangerous place for sheep to go");
         require(to != address(this), "You cant send sheep back to mom");
+        require(!pastured,"!pastured");
+   
+        _beforeTokenTransfer(from, to, amount);
 
-        if(pastured == true){
-            require(amount <= herdSize * 1e18 || from == sheepDogAddy || to == sheepDogAddy, "You need to wait for the sheppards guild to grow");
-            require(amount >= 1 * 1e18 || from == sheepDogAddy, "You trying to send lambchops? You need to send at least 1 SHEEP");
-            require(isContract(to) == false || to == sheepMarket || to == sheepDogAddy, "only EOAs and the market can hold sheep");
-            _beforeTokenTransfer(from, to, amount);
-            if(balanceOf(to) == 0 && to != sheepDogAddy){
-                herdSize = herdSize + 1;
-                sheppards.push(to);
-                isSheppard[to] = true;
-                emit newSheppard(block.timestamp, to);
-                emit sheepBorn(block.timestamp, to, herdSize);
-            }
-            uint256 fromBalance = _balances[from];
-            require(fromBalance >= amount, "Yer herd is too small");
-            unchecked {
-                _balances[from] = fromBalance - amount;
-                // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
-                // decrementing then incrementing.
-                _balances[to] += amount;
-            }
-            if(balanceOf(from) == 0 && to != sheepDogAddy){
-                herdSize = herdSize - 1;
-                isSheppard[from] == false;
-                emit sheepSlaughtered(block.timestamp, from, herdSize);
-            }
-
-            emit Transfer(from, to, amount);
-
-            _afterTokenTransfer(from, to, amount);
-        } else {
-            _beforeTokenTransfer(from, to, amount);
-
-            uint256 fromBalance = _balances[from];
-            require(fromBalance >= amount, "You dont have enough sheep to slaughter this many");
-            unchecked {
-                _balances[from] = fromBalance - amount;
-                // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
-                // decrementing then incrementing.
-                _balances[to] += amount;
-            }
-
-            emit Transfer(from, to, amount);
-
-            _afterTokenTransfer(from, to, amount);
+        uint256 fromBalance = _balances[from];
+        require(fromBalance >= amount, "You dont have enough sheep to slaughter this many");
+        unchecked {
+            _balances[from] = fromBalance - amount;
+            // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
+            // decrementing then incrementing.
+            _balances[to] += amount;
         }
+
+        emit Transfer(from, to, amount);
+
+        _afterTokenTransfer(from, to, amount);
+        
     }
     function isContract(address account) internal view returns (bool) {
         // This method relies on extcodesize/address.code.length, which returns 0
