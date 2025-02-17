@@ -61,7 +61,7 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
     }
 
     // Put your sheepDog to sleep so you can move the sheep.
-    function dogSleep(uint256 _share) public {
+    function dogSleep() public {
         require(wenToClaim[msg.sender] == 0,"dog is going to sleep");
         require(sheepDogShares[msg.sender] != 0,"no sheeps");
 
