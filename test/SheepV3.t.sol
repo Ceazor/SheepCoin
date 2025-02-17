@@ -44,6 +44,19 @@ contract SheepTest is Test {
         return bal;
     }
 
+    function mintSheepPreMint(uint256 mint) public {
+        wGasToken.approve(address(sheep), mint);
+        sheep.mintForFee(mint);
+    }
+
+    function mintSheepForAddress(address to,uint mint) public {
+        wGasToken.transfer(to, mint);
+
+        vm.startPrank(to);
+        mintSheepPreMint(mint);
+        vm.stopPrank();
+    }
+
     function testMintForFee() public {
         uint ownerPreBalance = wGasToken.balanceOf(address(this));
 
@@ -64,49 +77,52 @@ contract SheepTest is Test {
 
     function testTransferBeforePasture() public {
         uint sendSheep = ONE;
+
+        vm.expectRevert();
         sheep.transfer(ceazor, sendSheep);
-        balanceThis();
-        assertEq(sheep.balanceOf(ceazor), ONE);
-        assertEq(sheep.balanceOf(address(this)), sheep.totalSupply() - (sendSheep + HUNDRED + HUNDRED));
     }
 
     function testTransferAfterPasture() public {
-        sheep.takeOutOfPasture();
         uint sendSheep = ONE;
-        sheep.transfer(ceazor, sendSheep);
+        mintSheepForAddress(ceazor, sendSheep);
+        sheep.takeOutOfPasture();
+
         balanceThis();
         assertEq(sheep.balanceOf(ceazor), ONE);
-        assertEq(sheep.balanceOf(address(this)), sheep.totalSupply() - (sendSheep + HUNDRED + HUNDRED));
+        assertEq(sheep.totalSupply(),ONE + (ONE * 975/1000));
     }
 
     function testFailTransferTooMuchAfterPasture() public {
-        sheep.takeOutOfPasture();
         uint sendSheep = 2 * 1e18;
-        sheep.transfer(ceazor, sendSheep);
+        mintSheepForAddress(ceazor, sendSheep);
+        sheep.takeOutOfPasture();
+
         balanceThis();
         assertEq(sheep.balanceOf(ceazor), ONE);
         assertEq(sheep.balanceOf(address(this)), sheep.totalSupply() - (sendSheep + HUNDRED + HUNDRED));
     }
         
     function testTransfer2TimesAfterPasture() public {
-        sheep.takeOutOfPasture();
         uint sendSheep = ONE;
         uint send2Sheep = 2 * 1e18;
-        sheep.transfer(ceazor, sendSheep);
-        sheep.transfer(dan, send2Sheep);
+        mintSheepForAddress(ceazor, sendSheep);
+        mintSheepForAddress(dan, send2Sheep);
+        sheep.takeOutOfPasture();
+
         balanceThis();
         assertEq(sheep.balanceOf(ceazor), ONE);
         assertEq(sheep.balanceOf(dan), 2 * 1e18);
     }
 
     function testSellingToZero() public {
-        sheep.takeOutOfPasture();
         uint sendSheep = ONE;
         uint send2Sheep = 2 * 1e18;
         uint send3Sheep = 3 * 1e18;
-        sheep.transfer(ceazor, sendSheep);
-        sheep.transfer(dan, send2Sheep);
-        sheep.transfer(pair, send3Sheep);
+        mintSheepForAddress(ceazor, sendSheep);
+        mintSheepForAddress(dan, send2Sheep);
+        mintSheepForAddress(pair, send3Sheep);
+        sheep.takeOutOfPasture();
+
         vm.prank(pair);
         sheep.transfer(dan, send2Sheep);
         vm.prank(pair);
@@ -128,13 +144,15 @@ contract SheepTest is Test {
     }
 
     function testReturnSheepAferLassie() public {
-        sheep.takeOutOfPasture();
         uint sendSheep = ONE;
         uint send2Sheep = 2  * 1e18;
         uint send3Sheep = 3 * 1e18;
-        sheep.transfer(ceazor, sendSheep);
-        sheep.transfer(dan, send2Sheep);
-        sheep.transfer(ceazor, send3Sheep);
+        mintSheepForAddress(ceazor, sendSheep);
+        mintSheepForAddress(dan, send2Sheep);
+        mintSheepForAddress(ceazor, send3Sheep);
+    
+        sheep.takeOutOfPasture();
+   
         vm.warp(604801);
         vm.prank(dan);
         sheep.transfer(address(this), send2Sheep);
@@ -143,31 +161,41 @@ contract SheepTest is Test {
     }
 
     function testMintWolves() public {
-        uint sendSheep = HUNDRED;
-        sheep.transfer(ceazor, sendSheep);
+        wGasToken.transfer(ceazor, HUNDRED * 2);
+        vm.startPrank(ceazor);
+        mintSheepPreMint(HUNDRED);
+        vm.stopPrank();
+        sheep.takeOutOfPasture();
+
         vm.startPrank(ceazor);
         sheep.approve(address(wolf), HUNDRED);
         wGasToken.approve(address(wolf), HUNDRED + HUNDRED);
         wolf.getWolf();
-        assert(sheep.balanceOf(ceazor) == sendSheep - ONE);
+        assert(sheep.balanceOf(ceazor) == HUNDRED - ONE);
         wolf.getWolf();
-        assert(sheep.balanceOf(ceazor) == sendSheep - ONE - ONE - ONE);
+        assert(sheep.balanceOf(ceazor) == HUNDRED - ONE - ONE - ONE);
     }
 
     function testWolfEatTwice() public {
-        uint sendSheep = ONE;
-        sheep.transfer(ceazor, sendSheep);
-        uint sendSheepDan = TEN;
-        sheep.transfer(dan, sendSheepDan);        
+        wGasToken.transfer(ceazor, HUNDRED * 2);
+        vm.startPrank(ceazor);
+        mintSheepPreMint(ONE);
+        vm.stopPrank();
+        wGasToken.transfer(ceazor, HUNDRED * 2);
+        vm.startPrank(dan);
+        mintSheepPreMint(TEN);
+        vm.stopPrank();
+        sheep.takeOutOfPasture();
+      
         vm.startPrank(ceazor);
             wGasToken.approve(address(wolf), HUNDRED);
             wolf.getWolf();
             vm.warp(block.timestamp + 86401);
             wolf.eatSheep(dan, 0);
-            assert(sheep.balanceOf(dan) == sendSheepDan - ONE);
+            assert(sheep.balanceOf(dan) == TEN - ONE);
             vm.warp(block.timestamp + 86401);
             wolf.eatSheep(dan, 0);
-            assert(sheep.balanceOf(dan) == sendSheepDan - (ONE + ONE + ONE));
+            assert(sheep.balanceOf(dan) == TEN - (ONE + ONE + ONE));
             assert(sheep.balanceOf(ceazor) == (ONE + ONE + ONE) * 25 /100);
     }
 
@@ -241,47 +269,47 @@ contract SheepTest is Test {
             wolf.eatSheep(address(sheepDog), 0);
     }    
     function testLeaveSheepDogAll() public {
-        sheep.transfer(dan, HUNDRED);
         vm.startPrank(dan);
-            sheep.approve(address(sheepDog), HUNDRED);
-            sheepDog.protect(HUNDRED);
-            uint256 danBal = sheepDog.sheepDogShares(dan);
-            assert(sheep.balanceOf(dan) == 0);
-            assert(sheepDog.sheepDogShares(dan) == HUNDRED);
-            sheepDog.dogSleep(danBal);
-            vm.warp(block.timestamp + 172800);
-            uint256 rent = sheepDog.getCurrentRent(dan);
-            wGasToken.approve(address(sheepDog), rent);
-            sheepDog.getSheep();
-            assert(sheep.balanceOf(dan) == HUNDRED);
-            assert(wGasToken.balanceOf(trainer) == rent * 5 / 100);
-            assert(wGasToken.balanceOf(address(sheepDog)) == rent * 95 / 100);
+        mintSheepPreMint(HUNDRED);
+        vm.stopPrank();
+        sheep.takeOutOfPasture();
+        vm.startPrank(dan);
+        sheep.approve(address(sheepDog), HUNDRED);
+        sheepDog.protect(HUNDRED);
+        uint256 danBal = sheepDog.sheepDogShares(dan);
+        assert(sheep.balanceOf(dan) == 0);
+        assert(sheepDog.sheepDogShares(dan) == HUNDRED);
+        sheepDog.dogSleep();
+        vm.warp(block.timestamp + 172800);
+        uint256 rent = sheepDog.getCurrentRent(dan);
+        wGasToken.approve(address(sheepDog), rent);
+        sheepDog.getSheep();
+        assert(sheep.balanceOf(dan) == HUNDRED);
+        assert(wGasToken.balanceOf(address(sheepDog)) == rent);
 
     }
     function testLeaveSheepDogMulti() public {
-        sheep.transfer(dan, TEN);
         vm.startPrank(dan);
-            sheep.approve(address(sheepDog), TEN);
-            sheepDog.protect(TEN);
-            assert(sheep.balanceOf(dan) == 0);
-            sheepDog.dogSleep(ONE);
-            vm.warp(block.timestamp + 172800);
-            uint256 rentAmt = sheepDog.getCurrentRent(dan);
-            wGasToken.approve(address(sheepDog), rentAmt);
-            sheepDog.getSheep();
-            assert(sheep.balanceOf(dan) == ONE);
-            assert(wGasToken.balanceOf(trainer) == rentAmt * 5 / 100);
-            assert(wGasToken.balanceOf(address(sheepDog)) == rentAmt * 95 / 100);
-            sheepDog.dogSleep(ONE);
-            vm.warp(block.timestamp + 172800);
-            uint256 rentAmt2 = sheepDog.getCurrentRent(dan);
-            wGasToken.approve(address(sheepDog), rentAmt2);
-            sheepDog.getSheep();
-            assert(sheep.balanceOf(dan) == ONE + ONE);
-            assert(wGasToken.balanceOf(trainer) == (rentAmt + rentAmt2) * 5 / 100);
-            assert(wGasToken.balanceOf(address(sheepDog)) == (rentAmt + rentAmt2) * 95 / 100);
+        mintSheepPreMint(TEN);
+        vm.stopPrank();
+        sheep.takeOutOfPasture();
+        vm.startPrank(dan);
+        sheep.approve(address(sheepDog), TEN);
+        sheepDog.protect(TEN);
+        assert(sheep.balanceOf(dan) == 0);
+        sheepDog.dogSleep();
+        vm.warp(block.timestamp + 172800);
+        uint256 rentAmt = sheepDog.getCurrentRent(dan);
+        wGasToken.approve(address(sheepDog), rentAmt);
+        sheepDog.getSheep();
+        assert(sheep.balanceOf(dan) == TEN);
+        assert(wGasToken.balanceOf(address(sheepDog)) == rentAmt);
+
+        vm.expectRevert();
+        sheepDog.dogSleep();
 
     }
+
     function testFailLeaveSheepDogEarly() public {
         sheep.transfer(ceazor, TEN);
         sheep.transfer(dan, TEN);
@@ -289,7 +317,7 @@ contract SheepTest is Test {
             sheep.approve(address(sheepDog), TEN);
             sheepDog.protect(TEN);
             assert(sheep.balanceOf(dan) == 0);
-            sheepDog.dogSleep(ONE);
+            sheepDog.dogSleep();
             vm.warp(block.timestamp + 172600);
             sheepDog.getSheep();
     }
@@ -327,6 +355,8 @@ contract SheepTest is Test {
     //             sheepDog.getSheep(); //sheepDog is exempt from herdSize
     // }
     function testSwapViaRouter() public {
+        mintSheepForAddress(address(router), HUNDRED);
+        sheep.takeOutOfPasture();
         vm.prank(dan);
             wGasToken.approve(address(router), HUNDRED);
         vm.stopPrank();
