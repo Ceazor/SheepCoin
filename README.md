@@ -36,6 +36,7 @@ Wolf NFTS:
 * must eat at least once every week, to extend their life another week
 * eat more SHEEP each time they eat, 1st time 1 SHEEP, 2nd time 2 SHEEP, 3rd 3 SHEEP...Up until a certain Maximum number.
 * can eat any SHEEP anywhere except in the Breeder, and the sheepDOG(see below)
+* can eat SHEEP from the Liquidity Pool but owners of the wolf will not get the following split.
 
 Sheep that are eaten are split 75 percent burnt and 25 percent to the Wolf NFT owner.
 
