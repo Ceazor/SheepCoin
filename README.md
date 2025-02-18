@@ -8,20 +8,16 @@ Its basic premise is that sheep left idle will be targets for the hungry wolves.
 
 🐑🐺🍖
 
+The SHEEP coin is the main coin of this project. It is the coin that is fungible and tradable. Most features are
+priced in this coin.
+
 💻💻💻
 
-* `herdSize()`
-Keep in mind that you must take note of the token holder number. If you attempt to cause more to be transferred the transaction will fail. 
-To see the current token holders you can query the variable `herdSize()` as seen in the image below. 
-*  `takeToPasture()` 
+*  `takeOutOfPasture()` 
 This function will likely only be called once, and it turns on the `transfer()` restrictions. A value of true means transfers are restricted.
-* `releaseLassie()`
-This function will only be called if they experiment is considered a failure and the original LP needs to be dismantled. This has will start the 1 week cool down. 
-If this function is called, the bots will notify you, and it might then be a good idea to exit any SHEEP tokens you are holding back to the right side token.
-* `herded()`
-This is a timestamp of when a cool down has been started. This number plus `604800` will be the time when the transfer restrictions can be turned off.
-* `penTheSheep()`
-This function will turn off the transfer restrictions after the cooldown has passed.
+* `mintForFee()`
+This function will allow for minting SHEEP for a fee. The purpose of this is to allow for a LGE. During this time token
+transfers are restricted.
 * `eatSheep()`
 This function will burn SHEEP in any address except the SheepDOG. It can only be called by the WOLF NFTs
 
@@ -32,7 +28,7 @@ The Wolf NFT has the power to EAT sheep. To get a wolf you need to feed it some 
 * Wolf #2 = 2 SHEEP
 * Wolf #3 = 3 SHEEP
 
-The Wolf NFT also costs a number of Network Gas Tokens. T95% of these funds goto breeding more SHEEP (see below) 5% to the team..
+The Wolf NFT also costs a number of Network Gas Tokens. 95% of these funds goto breeding more SHEEP (see below) 5% to the team..
 
 Wolf NFTs get hungry and can even starve to death, but they also do get full and grow. 
 Wolf NFTS:
@@ -47,7 +43,7 @@ Sheep that are eaten are split 75 percent burnt and 25 percent to the Wolf NFT o
 
 * `getWolf()`
 mints you a new WOLF NFT
-increases the cost of the next WOLF by 10
+increases the cost of the next WOLF by ONE
 starts your hungry, starved timers
 * `eatSheep()`
 allows you to burn sheep tokens in any address except the sheepDOG and the LP
