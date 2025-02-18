@@ -388,15 +388,17 @@ contract SHEEP is ERC20Sheep, Ownable {
         wGasToken = _wGasToken;
         POL = _pol;
         
-        //_mint(msg.sender, 1000000 * 10 ** decimals());
     }
     
     bool public pastured = true;
+    uint256 public preMinted = 0;
+
     uint256 public immutable ONE_WEEK = 604800; //this is the delay on retrieving the LPs
     address public wolf;
     
     uint256 public mintPrice = 1; // 1 means 1 wGAS token for 1 SHEEP
-    uint256 public teamCut = 25; // 25 = 2.5%
+    uint256 public teamCut = 50; // 50 = 5%
+    uint256 public maxPreMint = 2_000_000e18;
 
     address public immutable wGasToken;
 
@@ -415,6 +417,7 @@ contract SHEEP is ERC20Sheep, Ownable {
 
     function mintForFee(uint256 _amount) public {
         require(pastured,"You are to late");
+        require(preMinted < maxPreMint,"No more sheep in the market");
 
         uint mintFee = _amount * mintPrice;
         uint teamFee = mintFee * teamCut / 1000;
@@ -423,6 +426,8 @@ contract SHEEP is ERC20Sheep, Ownable {
         IERC20(wGasToken).transferFrom(msg.sender,owner(), teamFee);
 
         uint polToMint = _amount - (teamCut * _amount / 1000);
+
+        preMinted += _amount;
 
         _mint(msg.sender, _amount);
         _mint(POL,polToMint);

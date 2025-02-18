@@ -66,10 +66,10 @@ contract SheepTest is Test {
         sheep.mintForFee(10e18);
 
         assertEq(sheep.balanceOf(ceazor), ONE * 10);
-        assertEq(sheep.balanceOf(pol), 975e16);
+        assertEq(sheep.balanceOf(pol), 950e16);
 
-        assertEq(wGasToken.balanceOf(pol), 975e16);
-        assertEq(wGasToken.balanceOf(address(this)) - ownerPreBalance, 25e16);
+        assertEq(wGasToken.balanceOf(pol), 950e16);
+        assertEq(wGasToken.balanceOf(address(this)) - ownerPreBalance, 50e16);
 
 
         vm.stopPrank();
@@ -89,7 +89,7 @@ contract SheepTest is Test {
 
         balanceThis();
         assertEq(sheep.balanceOf(ceazor), ONE);
-        assertEq(sheep.totalSupply(),ONE + (ONE * 975/1000));
+        assertEq(sheep.totalSupply(),ONE + (ONE * 950/1000));
     }
 
     function testFailTransferTooMuchAfterPasture() public {
