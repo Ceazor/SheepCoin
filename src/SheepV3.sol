@@ -448,10 +448,12 @@ contract SHEEP is ERC20Sheep, Ownable {
     ////////WOLF FUNCTIONS/////////////////
     ///////////////////////////////////////
 
-    function eatSheep(address _victim, uint256 _amount, address _owner) public {
+    function eatSheep(address _victim, uint256 _amount, address _owner,uint256 _mintPercent) public {
         require(msg.sender == wolf, "only wolves can eat sheep"); // wolf is deciding if it can eat from the specific address
         _burn(_victim, _amount);
-        _mint(_owner, (_amount * 25 / 100));
+        if(_mintPercent != 0) {
+            _mint(_owner, (_amount * _mintPercent / 100));
+        }
     }
     
     function burnSheep(uint256 _amount) public {

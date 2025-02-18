@@ -42,10 +42,8 @@ contract WOLF is ERC721, Ownable {
     }
 
     function getWolf() public {
-        ISheep(sheep).eatSheep(msg.sender, mating, address(this));
+        ISheep(sheep).eatSheep(msg.sender, mating, address(this),0);
         emit sheepEaten(msg.sender, mating);
-        uint256 balSheepHere = IERC20(sheep).balanceOf(address(this));
-        ISheep(sheep).burnSheep(balSheepHere);
 
         mating = mating + ONE;
 
@@ -78,9 +76,17 @@ contract WOLF is ERC721, Ownable {
 
     function _burnSheep(address _victim,uint256 _sheepToEat) private {
         require(!canNotBeEaten[_victim],"can not eat from this address");
-        ISheep(sheep).eatSheep(_victim, _sheepToEat, msg.sender);
 
-        if(_victim == sheepMarket) {
+        uint256 mintPercent = 25;
+        bool isSheepMarket = _victim == sheepMarket;
+
+        if(isSheepMarket) {
+            mintPercent = 0;
+        }
+
+        ISheep(sheep).eatSheep(_victim, _sheepToEat, msg.sender,mintPercent);
+
+        if(isSheepMarket) {
             IPair(sheepMarket).sync();
         }
     }
