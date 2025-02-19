@@ -12,6 +12,7 @@ import "src/interfaces/IPair.sol";
 
 contract WOLF is ERC721, Ownable {
     uint256 public constant ONE = 1 * 1e18;
+    uint256 public constant TEN = 10 * 1e18;
     uint256 public constant HUNDRED = 100 * 1e18;
 
     address public sheep;

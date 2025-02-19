@@ -12,6 +12,10 @@ pragma solidity ^0.8.13;
 contract SHEEPDOG is Ownable, ReentrancyGuard{
     address public sheep;
     
+    uint256 public constant ONE = 1 * 1e18;
+    uint256 public constant TEN = 10 * 1e18;
+    uint256 public constant HUNDRED = 100 * 1e18;
+
     uint public totalShares;
 
     mapping(address => uint256) public sheepDogShares;
@@ -91,7 +95,7 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
     ///////////////////////////////////////////////
 
     function getCurrentRent(address _user) public view returns (uint256 _currentRent) {
-        uint256 _calcRent = (block.timestamp - rentStart[_user]) / 86400 * 10 * 1e18;
+        uint256 _calcRent = (block.timestamp - rentStart[_user]) / 86400 * TEN * 1e18;
         return _calcRent;
     }
 
