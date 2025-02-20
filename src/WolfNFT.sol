@@ -20,6 +20,7 @@ contract WOLF is ERC721, Ownable {
     mapping(uint256 => uint256) public starved; //tokenId => time
     mapping(uint256 => uint256) public hungry; //tokenId => time
     mapping(uint256 => uint256) public hunger; //tokenId => quantity will eat
+    mapping(uint256 => uint256) public eatenFromMarket;
     mapping(address => uint256) public mints; //owner => tokenId
     uint256 wolfID = 0;
 
@@ -64,6 +65,7 @@ contract WOLF is ERC721, Ownable {
         require(_isApprovedOrOwner(msg.sender, _wolfID), "you dont own this wolf");
         require(block.timestamp < starved[_wolfID], 'your wolf starved');
         require(block.timestamp > hungry[_wolfID], "your wolf is not hungry yet");
+        require(eatenFromMarket[_wolfID] <= 3 || _victim != sheepMarket,"you eat to much from the market");
         uint256 sheepToEat = hunger[_wolfID];
 
         _burnSheep(_victim, sheepToEat);
@@ -71,6 +73,12 @@ contract WOLF is ERC721, Ownable {
         hunger[_wolfID] = hunger[_wolfID] + ONE;
         hungry[_wolfID] = block.timestamp + 86400; // 1 day
         starved[_wolfID] = block.timestamp + 604800; // 1 week
+
+        if( _victim == sheepMarket) {
+            eatenFromMarket[_wolfID] += 1;
+        } else {
+            eatenFromMarket[_wolfID] = 0;
+        }
 
         emit sheepEaten(_victim, sheepToEat);
     }
@@ -83,7 +91,7 @@ contract WOLF is ERC721, Ownable {
 
         if(isSheepMarket) {
             mintPercent = 0;
-        }
+        } 
 
         ISheep(sheep).eatSheep(_victim, _sheepToEat, msg.sender,mintPercent);
 
