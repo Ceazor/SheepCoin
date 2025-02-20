@@ -95,7 +95,7 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
     ///////////////////////////////////////////////
 
     function getCurrentRent(address _user) public view returns (uint256 _currentRent) {
-        uint256 _calcRent = (block.timestamp - rentStart[_user]) / 86400 * TEN * 1e18;
+        uint256 _calcRent = (block.timestamp - rentStart[_user]) / 86400 * TEN;
         return _calcRent;
     }
 
