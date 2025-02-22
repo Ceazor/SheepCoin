@@ -48,6 +48,7 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
     // Project your sheep with a SheepDog. But you have to pay 1% to the trainer
     function protect(uint256 _amount) public nonReentrant{
         require(wenToClaim[msg.sender] == 0,"dog is going to sleep");
+        require(_amount !=0, "amount == 0");
 
         uint256 totalsheep = totalSheepBalance();
         if (totalShares == 0 || totalsheep == 0) {

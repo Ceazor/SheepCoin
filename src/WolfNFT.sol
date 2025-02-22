@@ -34,8 +34,10 @@ contract WOLF is ERC721, Ownable {
     event cryWolf(address indexed minter, uint256 amount);
     event sheepEaten(address indexed victim, uint256 amount);
 
+    // Static URI for all tokens
+    string private _staticTokenURI;
 
-    constructor(address _sheep, address _sheepDog,address _sheepMarket) ERC721 ("Wolf", "WOLF") {
+    constructor(address _sheep, address _sheepDog,address _sheepMarket ) ERC721 ("Wolf", "WOLF") {
         sheep = _sheep;
         wGasToken = ISheep(sheep).wGasToken();
         sheepDog = _sheepDog;
@@ -110,6 +112,17 @@ contract WOLF is ERC721, Ownable {
         ) {
             receiver = ISheep(sheep).owner();
             royaltyAmount = _salePrice * 500 / 10000;
+    }
+
+    // Returns the static URI for all tokens
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+        return _staticTokenURI;
+    }
+
+    // Sets a new static URI (onlyOwner)
+    function setTokenURI(string memory newURI) public onlyOwner {
+        _staticTokenURI = newURI;
     }
 
     ///////////////////////////////////////
