@@ -380,7 +380,8 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "src/interfaces/IGasERC20.sol";
 
 contract SHEEP is ERC20Sheep, Ownable {
 
@@ -415,15 +416,29 @@ contract SHEEP is ERC20Sheep, Ownable {
     event sheepPastured(uint256 indexed _timestamp, bool _pastured);
     event newSheppard(uint256 indexed _timestamp, address _newSheppard);
 
-    function mintForFee(uint256 _amount) public {
+    function mintForFee() public payable{
+        require(msg.value > 0, "0 tokens");
+        IGasERC20(wGasToken).deposit{
+            value: msg.value
+        }();
+        _mintForFee(msg.value);
+    }
+
+    function mintForFee(uint amount) public{
+        require(amount > 0, "0 tokens");
+        IERC20(wGasToken).transferFrom(msg.sender,address(this), amount);
+        _mintForFee(amount);
+    }
+
+    function _mintForFee(uint256 _amount) private {
         require(pastured,"You are to late");
         require(preMinted < maxPreMint,"No more sheep in the market");
 
         uint mintFee = _amount * mintPrice;
         uint teamFee = mintFee * teamCut / 1000;
 
-        IERC20(wGasToken).transferFrom(msg.sender,POL, mintFee- teamFee);
-        IERC20(wGasToken).transferFrom(msg.sender,owner(), teamFee);
+        IERC20(wGasToken).transfer(POL, mintFee- teamFee);
+        IERC20(wGasToken).transfer(owner(), teamFee);
 
         uint polToMint = _amount - (teamCut * _amount / 1000);
 

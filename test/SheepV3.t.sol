@@ -82,6 +82,25 @@ contract SheepTest is Test {
         vm.stopPrank();
     }
 
+    function testMintForFeeNative() public {
+        uint ownerPreBalance = wGasToken.balanceOf(address(this));
+        
+        deal(address(ceazor), 10e18);
+
+        vm.startPrank(ceazor);
+        
+        sheep.mintForFee{value:10e18}();
+
+        assertEq(sheep.balanceOf(ceazor), ONE * 10);
+        assertEq(sheep.balanceOf(pol), 950e16);
+
+        assertEq(wGasToken.balanceOf(pol), 950e16);
+        assertEq(wGasToken.balanceOf(address(this)) - ownerPreBalance, 50e16);
+
+
+        vm.stopPrank();
+    }
+
     function testMintForFeeMax() public {
         uint ownerPreBalance = wGasToken.balanceOf(address(this));
 
