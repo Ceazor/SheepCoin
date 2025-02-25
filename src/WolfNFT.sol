@@ -67,7 +67,7 @@ contract WOLF is ERC721, Ownable {
         require(_isApprovedOrOwner(msg.sender, _wolfID), "you dont own this wolf");
         require(block.timestamp < starved[_wolfID], 'your wolf starved');
         require(block.timestamp > hungry[_wolfID], "your wolf is not hungry yet");
-        require(eatenFromMarket[_wolfID] <= 3 || _victim != sheepMarket,"you eat to much from the market");
+        require(eatenFromMarket[_wolfID] <= 2 || _victim != sheepMarket,"you eat too much from the market");
         uint256 sheepToEat = hunger[_wolfID];
 
         _burnSheep(_victim, sheepToEat);
