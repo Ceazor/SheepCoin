@@ -41,7 +41,7 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
         IERC20(wGasToken).transfer(ISheep(sheep).owner(), teamFee);
         
         IERC20(wGasToken).approve(router,buyAmount);
-        IRouter(router).swapExactTokensForTokensSimple(balGasToken, 1e18, wGasToken, sheep, false, address(this), block.timestamp + 10);
+        IRouter(router).swapExactTokensForTokensSimple(buyAmount, 1e18, wGasToken, sheep, false, address(this), block.timestamp + 10);
   
     }
 
