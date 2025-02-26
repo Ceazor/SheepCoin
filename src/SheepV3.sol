@@ -432,7 +432,7 @@ contract SHEEP is ERC20Sheep, Ownable {
 
     function _mintForFee(uint256 _amount) private {
         require(pastured,"You are to late");
-        require(preMinted < maxPreMint,"No more sheep in the market");
+        require(preMinted + _amount <= maxPreMint,"No more sheep in the market");
 
         uint mintFee = _amount * mintPrice;
         uint teamFee = mintFee * teamCut / 1000;
