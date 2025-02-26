@@ -17,6 +17,8 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
     uint256 public constant HUNDRED = 100 * 1e18;
 
     uint public totalShares;
+    uint public totalSheep;
+
 
     mapping(address => uint256) public sheepDogShares;
     mapping(address => uint256) public sheepToClaim;
@@ -41,8 +43,13 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
         IERC20(wGasToken).transfer(ISheep(sheep).owner(), teamFee);
         
         IERC20(wGasToken).approve(router,buyAmount);
+
+        uint256 sheepBefore = totalSheepBalance();
         IRouter(router).swapExactTokensForTokensSimple(buyAmount, 1e18, wGasToken, sheep, false, address(this), block.timestamp + 10);
-  
+        uint256 sheepAfter = totalSheepBalance();
+
+        totalSheep += sheepAfter - sheepBefore;
+
     }
 
     // Project your sheep with a SheepDog. But you have to pay 1% to the trainer
@@ -50,16 +57,18 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
         require(wenToClaim[msg.sender] == 0,"dog is going to sleep");
         require(_amount !=0, "amount == 0");
 
-        uint256 totalsheep = totalSheepBalance();
-        if (totalShares == 0 || totalsheep == 0) {
+        if (totalShares == 0 || totalSheep == 0) {
+            require(_amount == 100e18,"To small first deposit");
             sheepDogShares[msg.sender] += _amount;
             totalShares += _amount;
         } else {
-            uint256 what = _amount * (totalShares) / (totalsheep);
+            uint256 what = _amount * (totalShares) / (totalSheep);
+            require(what != 0, "deppsit to small");
             sheepDogShares[msg.sender] += what;
             totalShares += what;
         }
         ISheep(sheep).transferFrom(msg.sender, address(this), _amount);
+        totalSheep += _amount;
         if (rentStart[msg.sender] == 0){
             rentStart[msg.sender] = block.timestamp;
         }
@@ -77,9 +86,10 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
         require(wenToClaim[msg.sender] != 0, "put dog to sleep fist");
         require(block.timestamp >= wenToClaim[msg.sender], "your sheepDog is not asleep yet");
 
-        uint256 what = sheepDogShares[msg.sender] * (totalSheepBalance()) / (totalShares);
+        uint256 what = sheepDogShares[msg.sender] * (totalSheep) / (totalShares);
 
         ISheep(sheep).transfer(msg.sender, what);
+        totalSheep -= what;
         uint256 payRent = getCurrentRent(msg.sender);
 
         IERC20(wGasToken).transferFrom(msg.sender, address(this), payRent);
