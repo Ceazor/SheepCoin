@@ -265,7 +265,7 @@ contract SheepTest is Test {
         wolf.getWolf();
         vm.warp(block.timestamp + 86401);
 
-        for(int i=0;i<= 3 ; i++) {
+        for(int i=0;i< 3 ; i++) {
             wolf.eatSheep(address(pair), 0);
             vm.warp(block.timestamp + 86401);
         }
@@ -280,8 +280,8 @@ contract SheepTest is Test {
 
         wolf.eatSheep(address(pair), 0);
 
-        assert(sheep.balanceOf(address(pair)) == 84e18);
-        assert(pair.reserve0() == 84e18);
+        assert(sheep.balanceOf(address(pair)) == 89e18);
+        assert(pair.reserve0() == 89e18);
 
         vm.warp(block.timestamp + 86401);
     }
@@ -400,19 +400,20 @@ contract SheepTest is Test {
     }
     function testLeaveSheepDogMulti() public {
         vm.startPrank(dan);
-        mintSheepPreMint(TEN);
+        mintSheepPreMint(TEN * 10);
+        mintSheepForAddress(address(sheepDog), TEN);
         vm.stopPrank();
         sheep.takeOutOfPasture();
         vm.startPrank(dan);
-        sheep.approve(address(sheepDog), TEN);
-        sheepDog.protect(TEN);
+        sheep.approve(address(sheepDog), TEN * 10);
+        sheepDog.protect(TEN * 10);
         assert(sheep.balanceOf(dan) == 0);
         sheepDog.dogSleep();
         vm.warp(block.timestamp + 172800);
         uint256 rentAmt = sheepDog.getCurrentRent(dan);
         wGasToken.approve(address(sheepDog), rentAmt);
         sheepDog.getSheep();
-        assert(sheep.balanceOf(dan) == TEN);
+        assert(sheep.balanceOf(dan) == TEN * 10);
         assert(wGasToken.balanceOf(address(sheepDog)) == rentAmt);
 
         vm.expectRevert();
