@@ -21,7 +21,6 @@ contract SHEEPDOG is Ownable, ReentrancyGuard{
 
 
     mapping(address => uint256) public sheepDogShares;
-    mapping(address => uint256) public sheepToClaim;
     mapping(address => uint256) public wenToClaim;
     mapping(address => uint256) public rentStart;
     address public wGasToken;

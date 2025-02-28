@@ -236,8 +236,6 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
 
-        _beforeTokenTransfer(from, to, amount);
-
         uint256 fromBalance = _balances[from];
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
@@ -248,8 +246,6 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
         }
 
         emit Transfer(from, to, amount);
-
-        _afterTokenTransfer(from, to, amount);
     }
 
     /** @dev Creates `amount` tokens and assigns them to `account`, increasing
@@ -264,16 +260,12 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
     function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
 
-        _beforeTokenTransfer(address(0), account, amount);
-
         _totalSupply += amount;
         unchecked {
             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
             _balances[account] += amount;
         }
         emit Transfer(address(0), account, amount);
-
-        _afterTokenTransfer(address(0), account, amount);
     }
 
     /**
@@ -290,8 +282,6 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
     function _burn(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: burn from the zero address");
 
-        _beforeTokenTransfer(account, address(0), amount);
-
         uint256 accountBalance = _balances[account];
         require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
         unchecked {
@@ -301,8 +291,6 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
         }
 
         emit Transfer(account, address(0), amount);
-
-        _afterTokenTransfer(account, address(0), amount);
     }
 
     /**
@@ -343,38 +331,6 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
             }
         }
     }
-
-    /**
-     * @dev Hook that is called before any transfer of tokens. This includes
-     * minting and burning.
-     *
-     * Calling conditions:
-     *
-     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
-     * will be transferred to `to`.
-     * - when `from` is zero, `amount` tokens will be minted for `to`.
-     * - when `to` is zero, `amount` of ``from``'s tokens will be burned.
-     * - `from` and `to` are never both zero.
-     *
-     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
-     */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {}
-
-    /**
-     * @dev Hook that is called after any transfer of tokens. This includes
-     * minting and burning.
-     *
-     * Calling conditions:
-     *
-     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
-     * has been transferred to `to`.
-     * - when `from` is zero, `amount` tokens have been minted for `to`.
-     * - when `to` is zero, `amount` of ``from``'s tokens have been burned.
-     * - `from` and `to` are never both zero.
-     *
-     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
-     */
-    function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 }
 
 pragma solidity ^0.8.13;
@@ -394,27 +350,16 @@ contract SHEEP is ERC20Sheep, Ownable {
     bool public pastured = true;
     uint256 public preMinted = 0;
 
-    uint256 public immutable ONE_WEEK = 604800; //this is the delay on retrieving the LPs
+    uint256 public constant ONE_WEEK = 604800; //this is the delay on retrieving the LPs
     address public wolf;
     
-    uint256 public mintPrice = 1; // 1 means 1 wGAS token for 1 SHEEP
-    uint256 public teamCut = 50; // 50 = 5%
-    uint256 public maxPreMint = 2_000_000e18;
+    uint256 public constant mintPrice = 1; // 1 means 1 wGAS token for 1 SHEEP
+    uint256 public constant teamCut = 50; // 50 = 5%
+    uint256 public constant maxPreMint = 2_000_000e18;
 
     address public immutable wGasToken;
 
     address public immutable POL; // address to send the tokens that are going to be used as POL
-
-
-    ///////////////////////////////////////
-    /////EVENTS////////////////////////////
-    ///////////////////////////////////////
-
-    event sheepBorn(uint256 indexed _timestamp, address _newBorn, uint256 _herdSize);
-    event sheepSlaughtered(uint256 indexed _timestamp, address _sheepKiller, uint256 _herdSize);
-    event lassieReleased(uint256 indexed _timestamp);
-    event sheepPastured(uint256 indexed _timestamp, bool _pastured);
-    event newSheppard(uint256 indexed _timestamp, address _newSheppard);
 
     function mintForFee() public payable{
         require(msg.value > 0, "0 tokens");
@@ -455,7 +400,6 @@ contract SHEEP is ERC20Sheep, Ownable {
     /// @notice This function is set once. It sets the sheep free to be traded
     function takeOutOfPasture() public onlyOwner{
         pastured = false;
-        emit sheepPastured(block.timestamp, pastured);
     }
    
     /// @notice This function will setup the filters for the eat the sheep burn function
@@ -491,8 +435,6 @@ contract SHEEP is ERC20Sheep, Ownable {
         require(to != address(this), "You cant send sheep back to mom");
         require(!pastured,"!pastured");
    
-        _beforeTokenTransfer(from, to, amount);
-
         uint256 fromBalance = _balances[from];
         require(fromBalance >= amount, "You dont have enough sheep to slaughter this many");
         unchecked {
@@ -502,9 +444,6 @@ contract SHEEP is ERC20Sheep, Ownable {
             _balances[to] += amount;
         }
 
-        emit Transfer(from, to, amount);
-
-        _afterTokenTransfer(from, to, amount);
-        
+        emit Transfer(from, to, amount);        
     }
 }

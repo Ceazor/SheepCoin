@@ -58,7 +58,7 @@ contract WOLF is ERC721, Ownable {
 
         starved[wolfID] = block.timestamp + 604800;
         hungry[wolfID] = block.timestamp + 86400;
-        hunger[wolfID] = hunger[wolfID] + ONE;
+        hunger[wolfID] = ONE;
 
         wolfID = wolfID + 1;
     }
