@@ -3,13 +3,13 @@
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "src/interfaces/ISheep.sol";
 import "src/interfaces/IRouter.sol";
 
 pragma solidity ^0.8.13;
 
-contract SHEEPDOG is Ownable, ReentrancyGuard{
+contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
     address public sheep;
     
     uint256 public constant ONE = 1 * 1e18;

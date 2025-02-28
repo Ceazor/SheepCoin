@@ -12,7 +12,7 @@
 
 pragma solidity ^0.8.13;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
@@ -335,11 +335,11 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
 
 pragma solidity ^0.8.13;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "src/interfaces/IGasERC20.sol";
 
-contract SHEEP is ERC20Sheep, Ownable {
+contract SHEEP is ERC20Sheep, Ownable2Step {
 
     constructor(address _wGasToken,address _pol) ERC20Sheep("The_Herd_Mentality", "SHEEP") {
         wGasToken = _wGasToken;
