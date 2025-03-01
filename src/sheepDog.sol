@@ -47,8 +47,13 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
         IRouter(router).swapExactTokensForTokensSimple(buyAmount, 1e18, wGasToken, sheep, false, address(this), block.timestamp + 10);
         uint256 sheepAfter = totalSheepBalance();
 
-        totalSheep += sheepAfter - sheepBefore;
+        uint256 sheepBuyBack = sheepAfter - sheepBefore;
 
+        uint256 callerFee =  sheepBuyBack / 100;
+
+        totalSheep += sheepBuyBack - callerFee;
+
+        IERC20(sheep).transfer(msg.sender, callerFee);
     }
 
     // Project your sheep with a SheepDog. But you have to pay 1% to the trainer
