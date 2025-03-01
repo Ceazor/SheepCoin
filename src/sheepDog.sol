@@ -76,7 +76,7 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
 
     // Put your sheepDog to sleep so you can move the sheep.
     function dogSleep() public {
-        require(wenToClaim[msg.sender] == 0,"dog is going to sleep");
+        require(wenToClaim[msg.sender] == 0 || wenToClaim[msg.sender] + 172800 < block.timestamp,"dog is going to sleep");
         require(sheepDogShares[msg.sender] != 0,"no sheeps");
 
         wenToClaim[msg.sender] = block.timestamp + 172800; // 2 days
@@ -85,6 +85,7 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
     function getSheep() public {
         require(wenToClaim[msg.sender] != 0, "put dog to sleep fist");
         require(block.timestamp >= wenToClaim[msg.sender], "your sheepDog is not asleep yet");
+        require(wenToClaim[msg.sender] + 172800 > block.timestamp, "sheepDog wake up again");
 
         uint256 what = sheepDogShares[msg.sender] * (totalSheep) / (totalShares);
 
