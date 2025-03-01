@@ -55,6 +55,7 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
     function protect(uint256 _amount) public nonReentrant{
         require(wenToClaim[msg.sender] == 0,"dog is going to sleep");
         require(_amount !=0, "amount == 0");
+        require(sheepDogShares[msg.sender] + _amount <= 40000 * ONE,"to many sheep in one address");
 
         if (totalShares == 0 || totalSheep == 0) {
             require(_amount == 100e18,"To small first deposit");
