@@ -3,14 +3,14 @@
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "src/interfaces/ISheep.sol";
 import "src/interfaces/IPair.sol";
 
 
-contract WOLF is ERC721, Ownable2Step {
+contract WOLF is ERC721Enumerable, Ownable2Step {
     uint256 public constant ONE = 1 * 1e18;
     uint256 public constant TEN = 10 * 1e18;
     uint256 public constant HUNDRED = 100 * 1e18;
