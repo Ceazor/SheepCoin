@@ -398,6 +398,51 @@ contract SheepTest is Test {
         assert(wGasToken.balanceOf(address(sheepDog)) == rent);
 
     }
+
+    function testPutToMuchToSheepDog() public {
+        vm.startPrank(dan);
+        mintSheepPreMint(HUNDRED * 41);
+        vm.stopPrank();
+        sheep.takeOutOfPasture();
+        vm.startPrank(dan);
+        sheep.approve(address(sheepDog), HUNDRED * 40);
+
+        vm.expectRevert();
+        sheepDog.protect(HUNDRED * 401);
+    
+    }
+
+    function testLeaveSheepMoreThenNeeded() public {
+        vm.startPrank(dan);
+        mintSheepPreMint(HUNDRED);
+        vm.stopPrank();
+        sheep.takeOutOfPasture();
+        vm.startPrank(dan);
+        sheep.approve(address(sheepDog), HUNDRED);
+        sheepDog.protect(HUNDRED);
+        uint256 danBal = sheepDog.sheepDogShares(dan);
+        assert(sheep.balanceOf(dan) == 0);
+        assert(sheepDog.sheepDogShares(dan) == HUNDRED);
+        sheepDog.dogSleep();
+        vm.warp(block.timestamp + 172800 * 2 + 1);
+        uint256 rent = sheepDog.getCurrentRent(dan);
+        wGasToken.approve(address(sheepDog), rent);
+        vm.expectRevert();
+        sheepDog.getSheep();
+
+        sheepDog.dogSleep();
+
+        vm.warp(block.timestamp + 172800 + 1);
+        
+        rent = sheepDog.getCurrentRent(dan);
+        wGasToken.approve(address(sheepDog), rent);
+        sheepDog.getSheep();
+
+        assert(sheep.balanceOf(dan) == HUNDRED);
+        assert(wGasToken.balanceOf(address(sheepDog)) == rent);
+
+    }
+
     function testLeaveSheepDogMulti() public {
         vm.startPrank(dan);
         mintSheepPreMint(TEN * 10);
