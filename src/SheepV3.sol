@@ -348,6 +348,8 @@ contract SHEEP is ERC20Sheep, Ownable2Step {
     }
     
     bool public pastured = true;
+    bool public saleStarted = false;
+
     uint256 public preMinted = 0;
 
     uint256 public constant ONE_WEEK = 604800; //this is the delay on retrieving the LPs
@@ -377,6 +379,7 @@ contract SHEEP is ERC20Sheep, Ownable2Step {
 
     function _mintForFee(uint256 _amount) private {
         require(pastured,"You are to late");
+        require(saleStarted,"Sheep nor ready yet");
         require(preMinted + _amount <= maxPreMint,"No more sheep in the market");
 
         uint mintFee = _amount * mintPrice;
@@ -400,6 +403,10 @@ contract SHEEP is ERC20Sheep, Ownable2Step {
     /// @notice This function is set once. It sets the sheep free to be traded
     function takeOutOfPasture() public onlyOwner{
         pastured = false;
+    }
+
+    function startSale() public onlyOwner {
+        saleStarted = true;
     }
    
     /// @notice This function will setup the filters for the eat the sheep burn function

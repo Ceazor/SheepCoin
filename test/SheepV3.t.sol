@@ -38,6 +38,7 @@ contract SheepTest is Test {
         wolf = new WOLF(address(sheep), address(sheepDog),address(pair));
 
         sheep.buildTheFarm(address(wolf)); //TO:DO.. change these when ready
+        sheep.startSale();
 
         wGasToken.transfer(ceazor, HUNDRED * 200);
         wGasToken.transfer(dan, HUNDRED * 200);
