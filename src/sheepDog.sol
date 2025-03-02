@@ -9,6 +9,8 @@ import "src/interfaces/IRouter.sol";
 
 pragma solidity ^0.8.13;
 
+//Sheepdog is an APR vault for SHEEP that is safe from the wolf
+
 contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
     address public sheep;
     
@@ -18,7 +20,6 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
 
     uint public totalShares;
     uint public totalSheep;
-
 
     mapping(address => uint256) public sheepDogShares;
     mapping(address => uint256) public wenToClaim;
@@ -32,7 +33,7 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
         router = _router;
     }
 
-     //Buy SHEEP with gasToken
+    //Buy SHEEP with gasToken earned from rent paid
     function buySheep() public {
 
         uint256 balGasToken = IERC20(wGasToken).balanceOf(address(this));
@@ -56,7 +57,7 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
         IERC20(sheep).transfer(msg.sender, callerFee);
     }
 
-    // Project your sheep with a SheepDog. But you have to pay 1% to the trainer
+    // Deposit function for sheep with the SheepDog. You will pay x wGasTokens / day
     function protect(uint256 _amount) public nonReentrant{
         require(wenToClaim[msg.sender] == 0,"dog is going to sleep");
         require(_amount !=0, "amount == 0");
@@ -79,14 +80,15 @@ contract SHEEPDOG is Ownable2Step, ReentrancyGuard{
         }
     }
 
-    // Put your sheepDog to sleep so you can move the sheep.
+    // Put your sheepDog to sleep so you can withdraw the sheep.
     function dogSleep() public {
         require(wenToClaim[msg.sender] == 0 || wenToClaim[msg.sender] + 172800 < block.timestamp,"dog is going to sleep");
         require(sheepDogShares[msg.sender] != 0,"no sheeps");
 
         wenToClaim[msg.sender] = block.timestamp + 172800; // 2 days
     }
-    // Get your sheep back. User will need to pay 10 wGasTokens / day since they deposited. 5% ove these are sent to team, and 95% are sent to the breeder
+    // Get your sheep back. User will need to pay 10 wGasTokens / day since when they deposited. 
+    // 5% ove these are sent to team, and 95% accumulate here for buySheep()
     function getSheep() public {
         require(wenToClaim[msg.sender] != 0, "put dog to sleep fist");
         require(block.timestamp >= wenToClaim[msg.sender], "your sheepDog is not asleep yet");

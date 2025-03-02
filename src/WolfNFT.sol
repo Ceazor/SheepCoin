@@ -1,4 +1,3 @@
-// contracts/GLDToken.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
@@ -9,18 +8,23 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "src/interfaces/ISheep.sol";
 import "src/interfaces/IPair.sol";
 
+// This contract gets to burn SHEEP token in other addresses
+// It costs x gasTokens and SHEEP to mint
+// It gets hungrier and starves
 
 contract WOLF is ERC721Enumerable, Ownable2Step {
     uint256 public constant ONE = 1 * 1e18;
     uint256 public constant TEN = 10 * 1e18;
     uint256 public constant HUNDRED = 100 * 1e18;
+    uint256 public constant DAY = 86400;
+    uint256 public constant WEEK = 604800;
 
     address public sheep;
     uint256 public mating = ONE;
     mapping(uint256 => uint256) public starved; //tokenId => time
     mapping(uint256 => uint256) public hungry; //tokenId => time
     mapping(uint256 => uint256) public hunger; //tokenId => quantity will eat
-    mapping(uint256 => uint256) public eatenFromMarket;
+    mapping(uint256 => uint256) public eatenFromMarket; //tokenId => how many eaten
     mapping(address => uint256) public mints; //owner => tokenId
     uint256 wolfID = 0;
 
@@ -34,7 +38,7 @@ contract WOLF is ERC721Enumerable, Ownable2Step {
     event cryWolf(address indexed minter, uint256 amount);
     event sheepEaten(address indexed victim, uint256 amount);
 
-    // Static URI for all tokens
+    // Static URI for all tokens - Image does not vary
     string private _staticTokenURI;
 
     constructor(address _sheep, address _sheepDog,address _sheepMarket ) ERC721 ("Wolf", "WOLF") {
@@ -45,6 +49,9 @@ contract WOLF is ERC721Enumerable, Ownable2Step {
         sheepMarket = _sheepMarket;
     }
 
+    // This function allows caller to pay fee, burn tokens, and mint an NFT
+    // The fee is in wGasTokens
+    // The burned tokens are SHEEP - User must have bal
     function getWolf() public {
         ISheep(sheep).eatSheep(msg.sender, mating, address(this),0);
         emit sheepEaten(msg.sender, mating);
@@ -56,12 +63,15 @@ contract WOLF is ERC721Enumerable, Ownable2Step {
         _safeMint(msg.sender, wolfID);
         emit cryWolf(msg.sender, wolfID);
 
-        starved[wolfID] = block.timestamp + 604800;
-        hungry[wolfID] = block.timestamp + 86400;
+        starved[wolfID] = block.timestamp + WEEK;
+        hungry[wolfID] = block.timestamp + DAY;
         hunger[wolfID] = ONE;
 
         wolfID = wolfID + 1;
     }
+
+    // Owner of wolfNFT calls this to burn SHEEP
+    // Must burn 1/wk can 1/day
 
     function eatSheep(address _victim, uint256 _wolfID) public {
         require(_isApprovedOrOwner(msg.sender, _wolfID), "you dont own this wolf");
@@ -73,8 +83,8 @@ contract WOLF is ERC721Enumerable, Ownable2Step {
         _burnSheep(_victim, sheepToEat);
 
         hunger[_wolfID] = hunger[_wolfID] + ONE;
-        hungry[_wolfID] = block.timestamp + 86400; // 1 day
-        starved[_wolfID] = block.timestamp + 604800; // 1 week
+        hungry[_wolfID] = block.timestamp + DAY; // 1 day
+        starved[_wolfID] = block.timestamp + WEEK; // 1 week
 
         if( _victim == sheepMarket) {
             eatenFromMarket[_wolfID] += 1;
@@ -85,6 +95,7 @@ contract WOLF is ERC721Enumerable, Ownable2Step {
         emit sheepEaten(_victim, sheepToEat);
     }
 
+    // internal function that actually burns
     function _burnSheep(address _victim,uint256 _sheepToEat) private {
         require(!canNotBeEaten[_victim],"can not eat from this address");
 

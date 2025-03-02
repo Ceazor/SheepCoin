@@ -1,14 +1,26 @@
 // SPDX-License-Identifier: MIT
 
 //In crypto, there are so many sheep, they follow the trends of few, make bad choices with only a patch of sweet green grass in sight. 
-//Trolls haunt the bribges, yanking our fellows under to be devoured -- where's the biggest Gruff when needed. 
+//Trolls haunt the bridges, yanking our fellows under to be devoured -- where's the biggest Gruff when needed. 
+//🐑🐶🐺🥳
 
-//This token has a very special mechanic built into it. It restricts the transferability to the number of token holders in an attempt
-//to stop single holders from accumulating a massive herd of sheep, and if they do, it's harder to transfer them
+//The Deployer of this smart contract and all the system contracts
+// accepts no obligations or responsibilities for the consequences, 
+// either positive or negative, of individuals that interact with it. 
 
-//The Deployer of this smart contract accepts no obligations or responsibilities for the consequences, either positive or negative, of individuals that interact with it. 
+
 //USE AT YOUR OWN RISK
 
+
+//This URL links to a very concise explainer https://youtu.be/YwEGWxUQ24c 
+//The above url may change without notice
+
+// IF YOU HOLD THIS TOKEN
+// It if very likely that it will be burnt from your wallet. 
+
+
+// The following is copy paste, standard ERC20
+// For new code beyond standard goto LN 354
 
 pragma solidity ^0.8.13;
 
@@ -336,33 +348,32 @@ contract ERC20Sheep is Context, IERC20, IERC20Metadata {
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "src/interfaces/IGasERC20.sol";
 
+// Token of the GameFi Coin, SHEEP, will reside in the LP, sheepDog.sol, and is burned by the wolf.sol
 contract SHEEP is ERC20Sheep, Ownable2Step {
 
     constructor(address _wGasToken,address _pol) ERC20Sheep("The_Herd_Mentality", "SHEEP") {
-        wGasToken = _wGasToken;
-        POL = _pol;
-        
+        wGasToken = _wGasToken; 
+        POL = _pol; //Destination of presale for LGE
     }
     
-    bool public pastured = true;
-    bool public saleStarted = false;
+    bool public pastured = true; //when false Game ON
+    bool public saleStarted = false; //toggle on to start mint
 
-    uint256 public preMinted = 0;
+    uint256 public preMinted = 0; 
+
+    address public wolf; // NFT contract can ^BURN^ this token
 
     uint256 public constant ONE_WEEK = 604800; //this is the delay on retrieving the LPs
-    address public wolf;
-    
     uint256 public constant mintPrice = 1; // 1 means 1 wGAS token for 1 SHEEP
     uint256 public constant teamCut = 50; // 50 = 5%
     uint256 public constant maxPreMint = 2_000_000e18;
-
-    address public immutable wGasToken;
+    address public immutable wGasToken; //wrapped gas token of network
 
     address public immutable POL; // address to send the tokens that are going to be used as POL
 
+    // TWO Functions to mint for a payment, used for presale. Can disable with pasture
     function mintForFee() public payable{
         require(msg.value > 0, "0 tokens");
         IGasERC20(wGasToken).deposit{
@@ -370,13 +381,15 @@ contract SHEEP is ERC20Sheep, Ownable2Step {
         }();
         _mintForFee(msg.value);
     }
-
     function mintForFee(uint amount) public{
         require(amount > 0, "0 tokens");
         IERC20(wGasToken).transferFrom(msg.sender,address(this), amount);
         _mintForFee(amount);
     }
 
+    // Internal logic for mintForFee.ab - take sGasToken, spilt, mint for both
+    // POL need mints for addLiq later
+    // Team takes 5% of gas token
     function _mintForFee(uint256 _amount) private {
         require(pastured,"You are to late");
         require(saleStarted,"Sheep nor ready yet");
@@ -400,33 +413,36 @@ contract SHEEP is ERC20Sheep, Ownable2Step {
     /////SHEPPARD FUNCTIONS////////////////
     ///////////////////////////////////////
 
-    /// @notice This function is set once. It sets the sheep free to be traded
+    /// This function is set once. It sets the sheep free to be traded
     function takeOutOfPasture() public onlyOwner{
         pastured = false;
     }
 
+    // This function allows for early deployment, then start on trigger
     function startSale() public onlyOwner {
         saleStarted = true;
     }
    
-    /// @notice This function will setup the filters for the eat the sheep burn function
+    /// This function will setup the filters for the eat the sheep burn function
     function buildTheFarm(address _wolf) public onlyOwner {
         require(wolf == address(0), "the farm is already built");
         wolf = _wolf;
     }
 
     ///////////////////////////////////////
-    ////////WOLF FUNCTIONS/////////////////
+    /////////////WOLF FUNCTIONS////////////
+    ////This is how the wolf burns SHEEP //
     ///////////////////////////////////////
 
+    //Wolf.sol only burn SHEEP function
     function eatSheep(address _victim, uint256 _amount, address _owner,uint256 _mintPercent) public {
-        require(msg.sender == wolf, "only wolves can eat sheep"); // wolf is deciding if it can eat from the specific address
+        require(msg.sender == wolf, "only wolves can eat sheep"); // WOLF MUST BE ASSIGNED
         _burn(_victim, _amount);
         if(_mintPercent != 0) {
             _mint(_owner, (_amount * _mintPercent / 100));
         }
     }
-    
+    // Anyone can burn their own
     function burnSheep(uint256 _amount) public {
         _burn(msg.sender, _amount);
     }
@@ -435,7 +451,7 @@ contract SHEEP is ERC20Sheep, Ownable2Step {
     ////////STANDARDS MODIFICATIONS////////
     ///////////////////////////////////////
     
-    /// @notice In order to send sheep to others, including swaps, you need to send <= the herdSize.
+    //This has added restrictions on transfer until "ready" via pasture()
     function _transfer(address from, address to, uint256 amount) internal override {
         require(from != address(0), "Sheep don't come from nothing");
         require(to != address(0), "This is a dangerous place for sheep to go");
