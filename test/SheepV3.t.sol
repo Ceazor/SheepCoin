@@ -310,6 +310,26 @@ contract SheepTest is Test {
             assert(sheep.balanceOf(ceazor) == (ONE + ONE + ONE) * 25 /100);
     }
 
+    function testWolfTryEatFromNoAllowedAddress() public {
+        wGasToken.transfer(ceazor, HUNDRED * 2);
+        vm.startPrank(ceazor);
+        mintSheepPreMint(ONE);
+        vm.stopPrank();
+        wGasToken.transfer(ceazor, HUNDRED * 2);
+        vm.startPrank(dan);
+        mintSheepPreMint(TEN);
+        vm.stopPrank();
+        sheep.takeOutOfPasture();
+        wolf.toggleCanBeEaten(dan);
+      
+        vm.startPrank(ceazor);
+        wGasToken.approve(address(wolf), HUNDRED);
+        wolf.getWolf();
+        vm.warp(block.timestamp + 86401);
+        vm.expectRevert();
+        wolf.eatSheep(dan, 0);
+    }
+
     function testFailOthersWolfEat() public {
         uint sendSheep = TEN + TEN + TEN;
         sheep.transfer(ceazor, sendSheep);
